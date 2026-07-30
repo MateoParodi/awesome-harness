@@ -16,7 +16,7 @@
         "version": {
           "type": "string",
           "pattern": "^\\d+\\.\\d+\\.\\d+$",
-          "description": "Core version this repository was written against. Checked at the start of every run: minor mismatch warns, major mismatch refuses. The safety belt for a single global core shared by several projects."
+          "description": "Core version this repository was written against. Checked at the start of every run. While the core is 0.x: patch mismatch warns, minor mismatch refuses (0.x minors are breaking). From 1.0.0: minor warns, major refuses. The safety belt for a single global core shared by several projects."
         }
       }
     },

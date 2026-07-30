@@ -47,9 +47,11 @@ Read first, in this order:
 1. `~/.harness/profile/me.md` — who you are working for
 2. `.harness/config.yml` — this project's tracker, gate, rules
 3. `~/.harness/trackers/<kind>.md` — how to speak this tracker
+4. `~/.harness/core/state-machine.md` — states, ownership markers, change taxonomy
 
 Before starting, compare `harness.version` in the config against the core version.
-Minor mismatch: warn and continue. Major mismatch: stop.
+While the core is 0.x: patch mismatch warns, minor mismatch stops — 0.x minors are
+breaking. From 1.0.0: minor warns, major stops.
 ```
 
 ## Capabilities this agent has

@@ -6,9 +6,9 @@ A set of playbooks that give a coding agent a repeatable way to capture work, de
 it is genuinely finished, and open the pull request — without hardcoding your tracker, your
 toolchain, or your agent into the instructions.
 
-> **Status: v0.1 — specification stage.** The playbooks and one tracker backend have run
-> against real work. The installer, the config layer and the second adapter are being
-> built. Treat this as a design you can read and argue with, not a tool you can rely on.
+> **Status: v0.2 — early implementation.** The playbooks and one tracker backend have run
+> against real work. The installer, both adapters, a config validator and a smoke test
+> exist and run in CI. Young enough that you should read what it writes before trusting it.
 
 ---
 
@@ -103,9 +103,15 @@ allows the adapters not to be.
 ### Version pinning
 
 One shared core means an update changes behaviour everywhere at once. So the committed
-config declares `harness.version`, and every playbook checks it before starting: a minor
-mismatch warns, a major mismatch refuses to run. Without that check, a single global copy
-is a footgun.
+config declares `harness.version`, and every playbook checks it before starting.
+
+While the core is **0.x**, a **minor** mismatch refuses to run — 0.x minors are breaking
+by semver convention, and the 0.1 → 0.2 playbook rename is exactly the kind of change the
+check exists to catch. A patch mismatch warns. From 1.0.0 the usual rule applies: major
+refuses, minor warns. Without this check, a single global copy is a footgun.
+
+After pulling a core update that refuses, re-run `node ~/.harness/bin/init.mjs` in the
+project to regenerate the adapters, then bump `harness.version` in the config.
 
 ---
 
@@ -170,6 +176,11 @@ Five rules the whole thing rests on.
 `docs/index.html` — the complete design: the seam, the four layers, the state machine, the
 change taxonomy, the config schema, and field notes on two defects that only appeared once
 it ran.
+
+**What is canonical:** `core/`, `agents/` and `schema/` are normative — playbooks and
+agents follow them, and `harness.json` names them. `docs/index.html` is the narrative
+explanation; this README is the pitch. Where they disagree, the normative layer wins, and
+`bin/lint-names.mjs` (run in CI) keeps the names from drifting apart.
 
 ## Contributing
 

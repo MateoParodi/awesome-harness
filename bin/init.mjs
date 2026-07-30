@@ -15,7 +15,7 @@
  *   - Print exactly what was written and what was excluded. Nothing implicit.
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, rmSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
@@ -28,6 +28,7 @@ const VERSION = JSON.parse(readFileSync(join(CORE, "harness.json"), "utf8")).ver
 const PLAYBOOKS = ["create-task", "start-task", "pipeline", "review-and-fix", "ship"];
 const MARK_START = "<!-- awesome-harness:start -->";
 const MARK_END = "<!-- awesome-harness:end -->";
+const MANIFEST = ".harness/generated.json";
 
 const c = {
   dim: (s) => `\x1b[2m${s}\x1b[0m`,
@@ -40,6 +41,8 @@ const c = {
 const written = [];
 const excluded = [];
 const warnings = [];
+const generated = []; // raw paths this run wrote, recorded in the manifest for the next run
+const removed = [];
 
 function git(...args) {
   try {
@@ -117,6 +120,40 @@ function unresolvableCommands(chain) {
 }
 
 /* ── writers ───────────────────────────────────────────────────────── */
+
+/**
+ * Remove what a previous init generated, so a rename in the core does not leave stale
+ * adapters behind — a skill pointing at a deleted playbook still shows up in autocomplete
+ * and fails only when invoked. Deletes nothing but untracked paths listed in the previous
+ * manifest: never a tracked file, never anything the harness did not itself write.
+ * AGENTS.md is managed through its delimited block instead of deletion.
+ */
+function cleanupPrevious() {
+  if (!existsSync(MANIFEST)) return;
+  let prev;
+  try {
+    prev = JSON.parse(readFileSync(MANIFEST, "utf8"));
+  } catch {
+    warnings.push(`${MANIFEST} was unreadable — stale adapters from a previous init may remain.`);
+    return;
+  }
+  for (const p of prev.paths ?? []) {
+    if (p === "AGENTS.md") continue;
+    if (!existsSync(p) || isTracked(p)) continue;
+    rmSync(p, { force: true });
+    removed.push(p);
+    let dir = dirname(p);
+    while (dir.startsWith(".claude") && existsSync(dir) && readdirSync(dir).length === 0) {
+      rmSync(dir, { recursive: true, force: true });
+      dir = dirname(dir);
+    }
+  }
+}
+
+function writeManifest() {
+  mkdirSync(".harness", { recursive: true });
+  writeFileSync(MANIFEST, `${JSON.stringify({ version: VERSION, paths: generated }, null, 2)}\n`);
+}
 
 function writeConfig(answers) {
   mkdirSync(".harness", { recursive: true });
@@ -203,11 +240,14 @@ Read first, in this order:
 1. \`~/.harness/profile/me.md\` — who you are working for
 2. \`.harness/config.yml\` — this project's tracker, gate and rules
 3. \`~/.harness/trackers/${answers.tracker}.md\` — how to speak this tracker
+4. \`~/.harness/core/state-machine.md\` — states, ownership markers, change taxonomy
 
 Before starting, compare \`harness.version\` in the config against the core version
-(\`~/.harness/harness.json\`). Minor mismatch: warn and continue. Major mismatch: stop.
+(\`~/.harness/harness.json\`). While the core is 0.x: patch mismatch warns, minor
+mismatch stops — 0.x minors are breaking. From 1.0.0: minor warns, major stops.
 `);
     written.push(path);
+    generated.push(path);
     excluded.push(`.claude/skills/${pb}/`);
   }
 }
@@ -245,6 +285,7 @@ Follow the agent definition at \`~/.harness/agents/${r.core}.md\` exactly.
 Project rules and the verification chain you must respect are in \`.harness/config.yml\`.
 `);
     written.push(path);
+    generated.push(path);
   }
   excluded.push(".claude/agents/");
 
@@ -266,9 +307,13 @@ This project uses Awesome Harness. Playbooks live in \`~/.harness/core/\`:
 ${PLAYBOOKS.join(" · ")}
 
 Read before acting: \`~/.harness/profile/me.md\`, then \`.harness/config.yml\`,
-then \`~/.harness/trackers/${answers.tracker}.md\`.
+then \`~/.harness/trackers/${answers.tracker}.md\`, then
+\`~/.harness/core/state-machine.md\` for states, ownership markers and the change
+taxonomy.
 
 Check \`harness.version\` against \`~/.harness/harness.json\` before starting a run.
+While the core is 0.x a minor mismatch stops the run (0.x minors are breaking); a
+patch mismatch warns.
 
 Capability note: if this agent has no sub-agent primitive, the pipeline playbook runs
 implementation in the main thread — keep runs short and report that context was not
@@ -295,6 +340,7 @@ ${MARK_END}`;
     writeFileSync(path, `${block}\n`);
     written.push(path);
   }
+  generated.push(path);
   excluded.push("AGENTS.md");
 }
 
@@ -424,17 +470,38 @@ try {
   const agents = (await ask("adapters? (claude-code, agents-md, both, none)", "claude-code")).toLowerCase();
 
   writeConfig(answers);
+  cleanupPrevious();
   if (agents.includes("claude") || agents === "both") {
     writeClaudeAdapter(answers);
     writeReviewAgents(answers);
   }
   if (agents.includes("agents") || agents === "both") writeAgentsAdapter(answers);
-  writeExcludes([...excluded, ".harness/state.json"]);
+  writeManifest();
+  writeExcludes([...excluded, ".harness/state.json", MANIFEST]);
+
+  // The schema is only worth having if something runs it. Warn, never block: init's job
+  // is wiring, and a TODO gate is a deliberately invalid config the operator already knows about.
+  try {
+    const { validateFile } = await import(join(CORE, "bin", "validate.mjs"));
+    const errors = validateFile(".harness/config.yml");
+    if (errors.length) {
+      warnings.push(
+        `.harness/config.yml does not validate against the schema:\n    ` +
+        errors.slice(0, 6).join("\n    ") + (errors.length > 6 ? `\n    …and ${errors.length - 6} more` : "")
+      );
+    }
+  } catch (e) {
+    warnings.push(`Could not validate the config against the schema: ${e.message}`);
+  }
 
   console.log(`\n${c.bold("Written")}`);
   for (const w of written) console.log(`  ${w}`);
+  if (removed.length) {
+    console.log(`\n${c.bold("Removed")} ${c.dim("(stale — generated by a previous init, no longer produced)")}`);
+    for (const r of removed) console.log(`  ${c.dim(r)}`);
+  }
   console.log(`\n${c.bold("Excluded")} ${c.dim("(via .git/info/exclude — local only, never travels)")}`);
-  for (const e of [...excluded, ".harness/state.json"]) console.log(`  ${c.dim(e)}`);
+  for (const e of [...excluded, ".harness/state.json", MANIFEST]) console.log(`  ${c.dim(e)}`);
 
   if (warnings.length) {
     console.log(`\n${c.yellow(c.bold("Attention"))}`);

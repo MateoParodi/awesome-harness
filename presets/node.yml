@@ -21,7 +21,7 @@ vcs:
   language: en
   attribution: none
   pr:
-    enabled: true
+    enabled: false   # init flips this on when a push policy other than "never" is chosen
     draft: true
     link: url
 

@@ -36,9 +36,12 @@ This project uses Awesome Harness. Playbooks live in `~/.harness/core/`:
 create-task · start-task · pipeline · review-and-fix · ship
 
 Read before acting: `~/.harness/profile/me.md`, then `.harness/config.yml`,
-then `~/.harness/trackers/<kind>.md`.
+then `~/.harness/trackers/<kind>.md`, then `~/.harness/core/state-machine.md`
+for states, ownership markers and the change taxonomy.
 
-Check `harness.version` against the core before starting a run.
+Check `harness.version` against the core before starting a run. While the core
+is 0.x a minor mismatch stops the run (0.x minors are breaking); a patch
+mismatch warns.
 
 Capability note: this agent has no sub-agent primitive. The pipeline playbook runs
 implementation in the main thread — keep runs short and report that context was not
