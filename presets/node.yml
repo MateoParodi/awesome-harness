@@ -1,0 +1,40 @@
+# Preset — Node / TypeScript
+# Defaults the installer starts from. Every value is a proposal, not a fact:
+# the verify chain in particular MUST be confirmed against the project's real scripts.
+
+stack: node
+
+verify:
+  - name: typecheck
+    run: npm run typecheck
+    scope: whole project
+  - name: lint
+    run: npm run lint
+    scope: changed files where the linter supports it
+  - name: test
+    run: npm test
+    scope: narrowest relevant suite first
+
+vcs:
+  branch: current
+  push: never
+  language: en
+  attribution: none
+  pr:
+    enabled: true
+    draft: true
+    link: url
+
+rules:
+  - never commit directly to the default branch
+  - never edit generated output or lockfiles by hand
+
+preflight:
+  - dependencies installed and the lockfile unchanged
+  - working tree clean, or the operator has accepted the mixing
+
+# Detection notes for the installer:
+#   package.json present.
+#   Read its "scripts" block and propose the real script names — do not assume
+#   typecheck/lint/test exist. If a script is missing, ask rather than inventing one.
+#   Package manager comes from the lockfile, not from habit.

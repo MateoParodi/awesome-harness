@@ -1,0 +1,50 @@
+# Preset — editor-driven toolchain
+#
+# For projects where the compiler is an editor or IDE rather than a command: engine-based
+# game projects, some mobile toolchains, anything where "did it compile" is a question you
+# ask a running application through an integration.
+#
+# These are the projects the harness is easiest to get dangerously wrong in, because a
+# check that cannot run looks a lot like a check that passed.
+
+stack: editor-driven
+
+verify:
+  - name: compile
+    via: editor integration — force a script refresh, then read the console
+    require: zero errors
+    scope: whole project
+  - name: test
+    via: editor integration — run the test runner
+    scope: narrowest relevant assembly or suite first
+
+vcs:
+  branch: current
+  push: never
+  language: en
+  attribution: none
+  pr:
+    enabled: true
+    draft: true
+    link: url
+
+rules:
+  - never run a full player build as part of verification — it is slow and proves nothing the compile check does not
+  - never hand-edit engine metadata or serialised scene and asset files
+  - editing a source file through the filesystem does NOT recompile — the refresh step is mandatory
+
+preflight:
+  - the editor is running and its integration responds; if not, refuse the run rather than committing blind
+  - no modal or nested editing session is open that a forced refresh would discard
+
+# Why that last preflight check exists:
+#   A forced refresh triggers a domain reload. If the operator has an unsaved nested editing
+#   session open — a prefab stage, a scene in isolation, an asset editor — the reload
+#   discards it. Losing someone's unsaved work to a background verification step is
+#   unacceptable, so the run stops and asks instead.
+#
+# Detection notes for the installer:
+#   Engine project markers: an assets directory with engine metadata files, project settings
+#   directories, assembly definition files.
+#   The integration name and its exact invocation are project-specific — ASK. This is the
+#   preset most likely to need hand-editing after init.

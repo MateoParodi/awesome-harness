@@ -1,0 +1,220 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/MateoParodi/awesome-harness/schema/config.schema.json",
+  "title": "Awesome Harness project config",
+  "description": "Every project-specific noun, in one validated file. If a playbook is guessing something, the fix is a new key here — never a sentence added to the core.",
+  "type": "object",
+  "required": ["harness", "project", "stack", "tracker", "verify", "vcs"],
+  "additionalProperties": false,
+
+  "properties": {
+    "harness": {
+      "type": "object",
+      "required": ["version"],
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Core version this repository was written against. Checked at the start of every run: minor mismatch warns, major mismatch refuses. The safety belt for a single global core shared by several projects."
+        }
+      }
+    },
+
+    "project": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Short identifier for this repository. Used in reports and commit scopes."
+    },
+
+    "stack": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Preset the installer started from. Determines default conventions about file layout."
+    },
+
+    "tracker": {
+      "type": "object",
+      "required": ["kind", "board", "states"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "Which tracker document in trackers/ to load. Determines how every ticket operation is performed."
+        },
+        "board": {
+          "type": "string",
+          "description": "Board, project or team the queue is read from. MUST be an ${ENV_VAR} reference — never a literal identifier, because this file is committed.",
+          "pattern": "^\\$\\{[A-Z0-9_]+\\}$"
+        },
+        "states": {
+          "type": "object",
+          "description": "Maps each harness state to the literal value this tracker uses. The whole state machine is portable because of this map.",
+          "required": ["queued", "running", "verified", "blocked"],
+          "additionalProperties": false,
+          "properties": {
+            "captured":  { "type": "string" },
+            "queued":    { "type": "string" },
+            "running":   { "type": "string" },
+            "verified":  { "type": "string" },
+            "in_review": { "type": "string" },
+            "blocked":   { "type": "string" },
+            "shipped":   { "type": "string" }
+          }
+        },
+        "severity_order": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Severity values from most to least urgent. The queue needs only a total order. Ties break by age, oldest first."
+        },
+        "iteration": {
+          "type": "object",
+          "description": "Where 'the current iteration' comes from. A cycle, a sprint, a milestone, a version in development — the playbooks only ask for the current one.",
+          "additionalProperties": false,
+          "properties": {
+            "from":    { "type": "string", "description": "Field, relation or built-in concept holding the iteration." },
+            "current": { "type": "string", "description": "Predicate identifying which one is current." }
+          }
+        },
+        "assignee": {
+          "type": "string",
+          "description": "Who new tickets are assigned to, when the tracker models people at all. Omit when it does not."
+        },
+        "shared": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether humans also write the mapped states. When true the harness marks its own entries and ignores unmarked ones in silence."
+        },
+        "marker_field": {
+          "type": "string",
+          "description": "Text field the ownership marker is written into. Required whenever the board is shared."
+        },
+        "cache_ttl": {
+          "type": "string",
+          "description": "How long a queue read may be reused, e.g. 5m. Exists because rate-limited query APIs are common and a status check should not spend quota."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "shared": { "const": true } }, "required": ["shared"] },
+          "then": { "required": ["marker_field"] }
+        }
+      ]
+    },
+
+    "verify": {
+      "type": "array",
+      "minItems": 1,
+      "description": "The ordered gate. Runs in sequence; the first failure stops the task. This is the one section the installer refuses to guess — a gate that always passes is worse than no gate.",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "additionalProperties": false,
+        "properties": {
+          "name":    { "type": "string", "description": "What this check is called in reports." },
+          "run":     { "type": "string", "description": "Shell command. Mutually exclusive with 'via'." },
+          "via":     { "type": "string", "description": "Non-shell invocation, e.g. an editor or tool integration. Mutually exclusive with 'run'." },
+          "require": { "type": "string", "description": "Condition that counts as passing, when exit code is not enough." },
+          "scope":   { "type": "string", "description": "How narrowly it may run: narrowest relevant first, widening only for broad changes." }
+        },
+        "oneOf": [{ "required": ["run"] }, { "required": ["via"] }]
+      }
+    },
+
+    "vcs": {
+      "type": "object",
+      "required": ["branch", "push"],
+      "additionalProperties": false,
+      "properties": {
+        "branch": {
+          "type": "string",
+          "description": "'current' to stay on the checked-out branch, or a pattern to derive one per ticket."
+        },
+        "push": {
+          "enum": ["never", "ask", "always"],
+          "default": "never",
+          "description": "Pushing is outward-facing, so the default is the most conservative option. Anything else is a recorded authorisation."
+        },
+        "language": {
+          "type": "string",
+          "description": "Language commit messages are written in. Independent of the agent's reply language."
+        },
+        "attribution": {
+          "enum": ["none", "pr-only"],
+          "default": "none",
+          "description": "Whether generated work may be credited. Applies to commits and pull request bodies together — a clean history undermined by a footer is not a clean history."
+        },
+        "commit_map": {
+          "type": "object",
+          "description": "Change taxonomy entry to commit type. Extends the portable core for this domain. Every entry must map to exactly one type, or the field cannot decide anything.",
+          "additionalProperties": { "type": "string" }
+        },
+        "pr": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false,
+              "description": "Whether the ship playbook runs at all. A repository with no review culture stops at verified and committed."
+            },
+            "granularity": {
+              "enum": ["run"],
+              "default": "run",
+              "description": "One pull request per run. Per-ticket is intentionally not accepted: it requires a branch-per-ticket policy the execute playbook does not implement, and a key that silently does nothing is worse than an absent feature."
+            },
+            "draft": {
+              "type": "boolean",
+              "default": true,
+              "description": "Open as a draft and mark ready at the end of a clean run. Starts CI early without waking reviewers on a growing branch."
+            },
+            "link": {
+              "enum": ["url", "issue-ref"],
+              "default": "url",
+              "description": "How a pull request references its tickets. A URL for trackers living elsewhere; a closing keyword for trackers native to the forge."
+            },
+            "base": {
+              "type": "string",
+              "description": "Base branch. Defaults to the repository's default branch."
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "pr": { "properties": { "enabled": { "const": true } }, "required": ["enabled"] } },
+            "required": ["pr"]
+          },
+          "then": {
+            "properties": { "push": { "enum": ["ask", "always"] } },
+            "description": "Opening a pull request requires pushing. enabled:true with push:never is contradictory."
+          }
+        }
+      ]
+    },
+
+    "rules": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Hard prohibitions specific to this repository, injected verbatim into every sub-agent prompt. The escape hatch that keeps local exceptions out of the core."
+    },
+
+    "preflight": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Conditions checked once before a run starts, each able to halt it: toolchain reachable, no conflicting editor state, expected branch, clean working tree, and — whenever pushing is enabled — that the current branch is not the default one."
+    },
+
+    "planning": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "artifacts": {
+          "type": "string",
+          "description": "Where the plan playbook persists its artefacts: a path, or a named memory backend."
+        }
+      }
+    }
+  }
+}

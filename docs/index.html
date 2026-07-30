@@ -1,0 +1,1030 @@
+<title>Awesome Harness</title>
+
+<style>
+  :root {
+    --ground:      #F1F3F0;
+    --surface:     #FBFCFA;
+    --surface-alt: #E8ECE7;
+    --ink:         #1C221F;
+    --ink-soft:    #404A45;
+    --muted:       #6B7370;
+    --rule:        #D3D8D2;
+    --rule-soft:   #E2E6E0;
+    --patina:      #2F7A6B;
+    --patina-dim:  #E0EDE9;
+    --brass:       #A8762C;
+    --oxide:       #A63A2E;
+    --shadow:      rgba(28, 34, 31, .07);
+
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, ui-serif, serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    --mono:  ui-monospace, "SF Mono", SFMono-Regular, Menlo, "JetBrains Mono", Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground:      #121614;
+      --surface:     #191E1B;
+      --surface-alt: #212824;
+      --ink:         #E8EDE9;
+      --ink-soft:    #C2CCC7;
+      --muted:       #93A09A;
+      --rule:        #2A322E;
+      --rule-soft:   #222A26;
+      --patina:      #58B7A2;
+      --patina-dim:  #1B2A27;
+      --brass:       #D9A24E;
+      --oxide:       #D9695A;
+      --shadow:      rgba(0, 0, 0, .4);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #121614;
+    --surface:     #191E1B;
+    --surface-alt: #212824;
+    --ink:         #E8EDE9;
+    --ink-soft:    #C2CCC7;
+    --muted:       #93A09A;
+    --rule:        #2A322E;
+    --rule-soft:   #222A26;
+    --patina:      #58B7A2;
+    --patina-dim:  #1B2A27;
+    --brass:       #D9A24E;
+    --oxide:       #D9695A;
+    --shadow:      rgba(0, 0, 0, .4);
+  }
+
+  :root[data-theme="light"] {
+    --ground:      #F1F3F0;
+    --surface:     #FBFCFA;
+    --surface-alt: #E8ECE7;
+    --ink:         #1C221F;
+    --ink-soft:    #404A45;
+    --muted:       #6B7370;
+    --rule:        #D3D8D2;
+    --rule-soft:   #E2E6E0;
+    --patina:      #2F7A6B;
+    --patina-dim:  #E0EDE9;
+    --brass:       #A8762C;
+    --oxide:       #A63A2E;
+    --shadow:      rgba(28, 34, 31, .07);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr);
+    gap: 56px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px 120px;
+  }
+
+  /* ── spine ───────────────────────────────────────── */
+  .spine { padding-top: 64px; }
+  .spine-inner { position: sticky; top: 40px; }
+
+  .spine h2 {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin: 0 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .spine ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+
+  .spine a {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    padding: 5px 0;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 13.5px;
+    line-height: 1.35;
+    border-bottom: 1px solid transparent;
+  }
+  .spine a:hover { color: var(--patina); }
+  .spine a:focus-visible { outline: 2px solid var(--patina); outline-offset: 3px; border-radius: 2px; }
+  .spine a .n {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: .04em;
+    flex: 0 0 20px;
+  }
+
+  /* ── masthead ────────────────────────────────────── */
+  main { padding-top: 64px; min-width: 0; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--patina);
+    font-weight: 600;
+    margin: 0 0 20px;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(40px, 6.5vw, 68px);
+    line-height: 1.02;
+    letter-spacing: -.022em;
+    font-weight: 400;
+    margin: 0 0 22px;
+    text-wrap: balance;
+  }
+  h1 em { font-style: italic; color: var(--patina); }
+
+  .thesis {
+    font-family: var(--serif);
+    font-size: clamp(19px, 2.4vw, 24px);
+    line-height: 1.45;
+    color: var(--ink-soft);
+    max-width: 30ch;
+    margin: 0 0 40px;
+    text-wrap: balance;
+  }
+
+  .meta-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 72px;
+  }
+  .meta-strip div {
+    padding: 14px 26px 14px 0;
+    margin-right: 26px;
+    border-right: 1px solid var(--rule-soft);
+  }
+  .meta-strip div:last-child { border-right: 0; margin-right: 0; }
+  .meta-strip dt {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .meta-strip dd { margin: 0; font-size: 14px; font-weight: 500; }
+
+  /* ── the seam diagram ────────────────────────────── */
+  .seam {
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    padding: 30px 28px 26px;
+    margin-bottom: 84px;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+  .seam-cap {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 22px;
+  }
+  .band {
+    border: 1px solid var(--rule);
+    padding: 13px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 14px;
+  }
+  .band .tag {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    flex: 0 0 auto;
+    min-width: 96px;
+  }
+  .band .items { display: flex; flex-wrap: wrap; gap: 7px; min-width: 0; }
+  .chip {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    padding: 3px 9px;
+    border: 1px solid var(--rule);
+    background: var(--ground);
+    white-space: nowrap;
+  }
+  .band.core {
+    border-color: var(--patina);
+    background: var(--patina-dim);
+    border-width: 1px 1px 1px 3px;
+  }
+  .band.core .tag { color: var(--patina); font-weight: 600; }
+  .band.core .chip { border-color: var(--patina); background: var(--surface); }
+  .stitch {
+    height: 20px;
+    margin-left: 48px;
+    border-left: 1px dashed var(--rule);
+  }
+  .seam-note {
+    margin: 22px 0 0;
+    font-size: 13.5px;
+    color: var(--muted);
+    max-width: 62ch;
+  }
+
+  /* ── sections ────────────────────────────────────── */
+  section { margin-bottom: 78px; scroll-margin-top: 28px; }
+
+  .sec-head { margin-bottom: 26px; }
+  .sec-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .15em;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 8px;
+  }
+  h2.sec {
+    font-family: var(--serif);
+    font-size: clamp(26px, 3.4vw, 34px);
+    line-height: 1.15;
+    letter-spacing: -.015em;
+    font-weight: 400;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .lede { max-width: 66ch; color: var(--ink-soft); margin: 14px 0 0; }
+
+  h3 {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 650;
+    letter-spacing: -.005em;
+    margin: 34px 0 10px;
+  }
+  p { max-width: 66ch; margin: 0 0 15px; }
+  p:last-child { margin-bottom: 0; }
+  strong { font-weight: 650; }
+  a { color: var(--patina); }
+
+  code {
+    font-family: var(--mono);
+    font-size: .875em;
+    background: var(--surface-alt);
+    padding: 1.5px 5px;
+    border-radius: 2px;
+  }
+
+  /* ── tables ──────────────────────────────────────── */
+  .tw { overflow-x: auto; margin: 4px 0 0; }
+  table { border-collapse: collapse; width: 100%; min-width: 480px; font-size: 14px; }
+  th, td { text-align: left; padding: 11px 16px 11px 0; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+  th {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  td.k { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; color: var(--ink); }
+  td.dim { color: var(--muted); }
+  tr:last-child td { border-bottom: 0; }
+
+  /* ── layer cards ─────────────────────────────────── */
+  .layers { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
+  .layer {
+    display: grid;
+    grid-template-columns: 68px minmax(0, 1fr);
+    gap: 24px;
+    padding: 26px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .layer-id {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .1em;
+    color: var(--patina);
+    font-weight: 600;
+    padding-top: 2px;
+  }
+  .layer h3 { margin: 0 0 8px; font-size: 16px; }
+  .layer .swap {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 12px;
+  }
+
+  /* ── code blocks ─────────────────────────────────── */
+  .code {
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    overflow-x: auto;
+    margin: 0;
+  }
+  .code-cap {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--rule-soft);
+    background: var(--surface-alt);
+  }
+  pre { margin: 0; padding: 16px; font-family: var(--mono); font-size: 12.5px; line-height: 1.7; }
+  pre .c { color: var(--muted); }
+
+  /* ── profile ─────────────────────────────────────── */
+  .profile {
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--brass);
+    background: var(--surface);
+    padding: 28px 30px;
+  }
+  .profile .cap {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--brass);
+    font-weight: 600;
+    margin: 0 0 12px;
+  }
+
+  /* ── field notes ─────────────────────────────────── */
+  .note {
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--oxide);
+    background: var(--surface);
+    padding: 22px 26px;
+    margin-bottom: 16px;
+  }
+  .note .label {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--oxide);
+    font-weight: 600;
+    margin-bottom: 9px;
+  }
+  .note h3 { margin: 0 0 8px; font-size: 15.5px; }
+  .note p { font-size: 14.5px; }
+
+  /* ── state flow ──────────────────────────────────── */
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-bottom: 26px; }
+  .state {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    padding: 5px 11px;
+    border: 1px solid var(--patina);
+    color: var(--patina);
+    white-space: nowrap;
+  }
+  .state.stop { border-color: var(--oxide); color: var(--oxide); }
+  .arrow { color: var(--muted); font-size: 12px; }
+
+  /* ── steps ───────────────────────────────────────── */
+  .steps { list-style: none; margin: 4px 0 0; padding: 0; border-top: 1px solid var(--rule); }
+  .steps li {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 18px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    max-width: 70ch;
+  }
+  .steps .sn { font-family: var(--mono); font-size: 11px; color: var(--patina); font-weight: 600; padding-top: 2px; }
+  .steps strong { display: block; margin-bottom: 3px; }
+  .steps span.d { color: var(--ink-soft); font-size: 14.5px; }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 22px;
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 66ch;
+  }
+  footer .sig { font-family: var(--mono); font-size: 10.5px; letter-spacing: .13em; text-transform: uppercase; margin-bottom: 6px; color: var(--patina); }
+
+  @media (max-width: 860px) {
+    .shell { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 0 22px 80px; }
+    .spine { padding-top: 40px; }
+    .spine-inner { position: static; }
+    .spine ol { flex-direction: row; flex-wrap: wrap; gap: 4px 16px; }
+    .spine a { border: 0; }
+    main { padding-top: 40px; }
+    .layer { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    .stitch { margin-left: 24px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div class="shell">
+
+  <nav class="spine">
+    <div class="spine-inner">
+      <h2>Contents</h2>
+      <ol>
+        <li><a href="#seam"><span class="n">01</span><span>The seam</span></a></li>
+        <li><a href="#playbooks"><span class="n">02</span><span>Five playbooks</span></a></li>
+        <li><a href="#layers"><span class="n">03</span><span>Four layers</span></a></li>
+        <li><a href="#operator"><span class="n">04</span><span>Operator profile</span></a></li>
+        <li><a href="#states"><span class="n">05</span><span>State machine</span></a></li>
+        <li><a href="#taxonomy"><span class="n">06</span><span>Change taxonomy</span></a></li>
+        <li><a href="#schema"><span class="n">07</span><span>Config schema</span></a></li>
+        <li><a href="#invariants"><span class="n">08</span><span>Invariants</span></a></li>
+        <li><a href="#notes"><span class="n">09</span><span>Field notes</span></a></li>
+        <li><a href="#install"><span class="n">10</span><span>Install</span></a></li>
+      </ol>
+    </div>
+  </nav>
+
+  <main>
+
+    <p class="eyebrow">Operator harness · v0.1 · draft spec</p>
+    <h1>Awesome <em>Harness</em></h1>
+    <p class="thesis">One playbook for turning a thought into a shipped commit. Any repo, any stack, any agent.</p>
+
+    <dl class="meta-strip">
+      <div><dt>Playbooks</dt><dd>Capture · Plan · Execute · Verify · Ship</dd></div>
+      <div><dt>Agents</dt><dd>Pluggable adapters</dd></div>
+      <div><dt>Trackers</dt><dd>Pluggable backends</dd></div>
+      <div><dt>Concurrency</dt><dd>One task, one branch</dd></div>
+    </dl>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <section id="seam">
+      <div class="seam">
+        <p class="seam-cap">Architecture — the seam</p>
+
+        <div class="band">
+          <span class="tag">Agent adapter</span>
+          <span class="items">
+            <span class="chip">skill files</span>
+            <span class="chip">rules files</span>
+            <span class="chip">agent manifest</span>
+          </span>
+        </div>
+        <div class="stitch"></div>
+        <div class="band core">
+          <span class="tag">Core playbook</span>
+          <span class="items">
+            <span class="chip">capture</span>
+            <span class="chip">plan</span>
+            <span class="chip">execute</span>
+            <span class="chip">verify</span>
+            <span class="chip">ship</span>
+          </span>
+        </div>
+        <div class="stitch"></div>
+        <div class="band">
+          <span class="tag">Project config</span>
+          <span class="items">
+            <span class="chip">tracker</span>
+            <span class="chip">verify chain</span>
+            <span class="chip">commit map</span>
+            <span class="chip">hard rules</span>
+          </span>
+        </div>
+
+        <p class="seam-note">The core never names a tool, an identifier, or a language. Everything specific to a repository enters from below; everything specific to an agent enters from above. Swap either side without touching the middle — that is the whole design, and everything else on this page is a consequence of it.</p>
+      </div>
+
+      <div class="sec-head">
+        <span class="sec-num">01 — Why a seam</span>
+        <h2 class="sec">Most agent setups rot because the playbook and the project are the same file</h2>
+      </div>
+      <p class="lede">The instinct when an agent misbehaves is to add another paragraph of instruction. Do that for a few months and the instructions have absorbed the tracker's identifiers, the compiler's invocation, and one codebase's private exceptions. The result works beautifully in exactly one repository.</p>
+      <p>The fix isn't more instruction. It's a boundary. A playbook that says <em>run the project's declared compile check and require zero errors</em> is portable. One that names a specific compiler command is a document about that toolchain wearing a general-purpose costume. Same for the tracker: <em>move the ticket to the project's in-progress state</em> travels; a hardcoded database identifier does not.</p>
+      <p>So the harness is one middle layer with sockets on both faces. What's universal is the <strong>method</strong>: how work gets captured, how it is decided that a task is genuinely finished, and what happens when it isn't. What's local is every noun.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <section id="playbooks">
+      <div class="sec-head">
+        <span class="sec-num">02 — The five playbooks</span>
+        <h2 class="sec">Capture is cheap and constant. Execution is expensive and deliberate.</h2>
+      </div>
+      <p class="lede">The central split: writing work down happens whenever a thought arrives, in any session, and starts nothing. Doing the work happens when the operator decides, and drains a queue.</p>
+
+      <div class="tw">
+        <table>
+          <thead>
+            <tr><th>Playbook</th><th>What it does</th><th>What it must never do</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="k">capture</td>
+              <td>Reconnaissance in the code, then a short interview, then a ticket carrying a reproduction, a verified root cause where one is findable, and an acceptance criterion. Enqueues it.</td>
+              <td class="dim">Write feature code. Commit. Start the work.</td>
+            </tr>
+            <tr>
+              <td class="k">plan</td>
+              <td>Spec-driven planning for the rare ticket that earns it: explore, propose, specify, design, break into tasks. Stops at the planning boundary.</td>
+              <td class="dim">Implement. A three-line fix never sees a spec.</td>
+            </tr>
+            <tr>
+              <td class="k">execute</td>
+              <td>Status, and the engine: take the top ticket, dispatch it to a fresh sub-agent, gate it, commit it, update the tracker, continue. Pause, resume, skip, resync.</td>
+              <td class="dim">Deploy. Push. Change branch. Revert on failure.</td>
+            </tr>
+            <tr>
+              <td class="k">verify</td>
+              <td>Independent blind review, triage, fix, run the project's real checks, then a fresh blind re-review against the final diff. Caps its own loop.</td>
+              <td class="dim">Trust its own opinion when an executable check exists.</td>
+            </tr>
+            <tr>
+              <td class="k">ship</td>
+              <td>Push the working branch and open the run's pull request as a draft, body assembled from the tickets it contains; update it on each later commit; mark it ready when the run ends. Moves each included ticket to the in-review state.</td>
+              <td class="dim">Merge. Force-push. Push to the default branch. Request reviewers.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>One pull request per run, not per ticket</h3>
+      <p>A run works every ticket on one branch, so a PR per ticket is not available — they would all be the same branch. The playbook is therefore <strong>idempotent</strong>: the first commit creates the PR, later commits update it, and the end of the run marks it ready. A project that wants a PR per ticket needs a branch per ticket, which is a different branch policy and a config decision, not a different playbook.</p>
+      <p>It opens as a <strong>draft</strong> from the first commit on purpose — continuous integration starts early and work is never stranded if a run dies, without waking reviewers on a branch that is still growing.</p>
+      <p>The PR is always publishable, and that falls out of the failure doctrine rather than being enforced: work from a blocked task goes to a stash and is never committed, so the branch only ever contains verified work.</p>
+
+      <h3>Pushing is an authorised action, not an assumed one</h3>
+      <p>Everything before this point is local and reversible. Pushing is outward-facing: it reaches teammates, triggers pipelines, and cannot be quietly undone. So the harness treats it as requiring explicit standing authorisation recorded in config, and refuses to start a run on the default branch — because auto-push plus a default branch means pushing straight to it.</p>
+
+      <h3>Why execution delegates to a sub-agent</h3>
+      <p>The orchestrator stays thin on purpose: read the queue, pick a ticket, hand it off, commit, move on. Implementation happens in a fresh context that dies with the task. The eighth ticket of a run therefore begins with the orchestrator as clear-headed as the first — which is the difference between a queue that drains and one that degrades into confident nonsense around item four.</p>
+      <p>Serial, one ticket at a time, one branch, no worktrees. Parallelism across a single branch buys merge conflicts and diffs nobody can attribute.</p>
+      <p>An agent without a sub-agent primitive still runs every playbook; it just runs execution in the main thread and loses that context hygiene. The adapter declares the limitation so the playbook can shorten its runs instead of pretending.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <section id="layers">
+      <div class="sec-head">
+        <span class="sec-num">03 — Four layers</span>
+        <h2 class="sec">Who you are, where you are, how the work is done, what's wired</h2>
+      </div>
+      <p class="lede">Four orthogonal axes. Change one without touching the others, or the seam has failed.</p>
+
+      <div class="layers">
+        <div class="layer">
+          <div class="layer-id">L0</div>
+          <div>
+            <h3>Operator profile — the who</h3>
+            <p>Sits under everything and travels with the person rather than the repository. One document describing how the operator works, what they refuse, and which context they are in. Loaded by every agent in every project so behaviour is identical across a work repo on Tuesday and a personal one on Sunday.</p>
+            <p class="swap">One per human · global</p>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="layer-id">L1</div>
+          <div>
+            <h3>Core playbooks — the how</h3>
+            <p>Plain prose, no tool names, no product names. Refers only to abstract operations the config is required to supply: create a ticket, move a ticket, compile, test, commit, open a pull request. Also holds the state machine, the change taxonomy, and the failure doctrine.</p>
+            <p class="swap">One copy per machine · every project points at it</p>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="layer-id">L2</div>
+          <div>
+            <h3>Project config — the where</h3>
+            <p>One config file per repository. Declares the tracker and its field mapping, the ordered verification chain, the commit convention, the branch and push policy, and the repository's hard rules. Written once by the installer from a stack preset, then edited by hand.</p>
+            <p class="swap">Per repository · read by every playbook</p>
+          </div>
+        </div>
+        <div class="layer">
+          <div class="layer-id">L3</div>
+          <div>
+            <h3>Agent adapter — the wiring</h3>
+            <p>Generated pointers that make the core discoverable to one specific agent, in whatever file format that agent reads. Each adapter also declares what its agent <em>lacks</em>, because a playbook needs to know which of its assumptions don't hold. Never committed — they are derivable from the config, and one person's choice of agent shouldn't land in everyone else's tree.</p>
+            <p class="swap">Per agent · generated · never committed</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <section id="operator">
+      <div class="sec-head">
+        <span class="sec-num">04 — Operator profile</span>
+        <h2 class="sec">The agent needs to know who it is working for</h2>
+      </div>
+      <p class="lede">Not personality decoration. This layer exists because a handful of facts about the operator change what an agent should actually <em>do</em> — which stack it is in, which language to answer in, which actions require permission first, and what counts as evidence.</p>
+
+      <div class="profile">
+        <p class="cap">Required fields</p>
+        <div class="tw">
+          <table>
+            <thead><tr><th>Field</th><th>What it declares</th><th>What changes without it</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="k">role</td>
+                <td>Seniority and discipline, and the depth of explanation expected alongside a change.</td>
+                <td class="dim">The agent hands over a diff with no reasoning, or explains fundamentals to someone who wrote them.</td>
+              </tr>
+              <tr>
+                <td class="k">contexts</td>
+                <td>The named environments the operator moves between, each with its stack and its stakes. One entry per repository family.</td>
+                <td class="dim">Conventions from one stack leak into another, and risk is judged uniformly across environments with very different consequences.</td>
+              </tr>
+              <tr>
+                <td class="k">language</td>
+                <td>Default reply language, plus any per-context override, plus the rule that the operator's own messages decide — never the surrounding context.</td>
+                <td class="dim">The agent takes its language from memory files or system text and answers in the wrong one.</td>
+              </tr>
+              <tr>
+                <td class="k">permission</td>
+                <td>Which classes of action require asking in the current conversation rather than relying on precedent: anything outward-facing, destructive, or irreversible.</td>
+                <td class="dim">Approval granted once gets treated as standing, which is how production gets touched.</td>
+              </tr>
+              <tr>
+                <td class="k">evidence</td>
+                <td>What the operator accepts as proof. Typically: verify against the source before asserting, and treat stored notes as dated claims rather than current fact.</td>
+                <td class="dim">The agent agrees confidently, cites a stale memory, and both parties act on something no longer true.</td>
+              </tr>
+              <tr>
+                <td class="k">authorship</td>
+                <td>Commit conventions and whether generated work may be attributed in the history.</td>
+                <td class="dim">Trailers and co-author lines appear in a history that was supposed to stay clean.</td>
+              </tr>
+              <tr>
+                <td class="k">interaction</td>
+                <td>How the operator wants to be engaged: whether to push back, whether to offer alternatives with trade-offs, and that a question ends the turn rather than being answered by the asker.</td>
+                <td class="dim">The agent asks and then answers itself, or agrees with a wrong premise to stay agreeable.</td>
+              </tr>
+              <tr>
+                <td class="k">tooling</td>
+                <td>Preferred commands and anything explicitly banned from the shell.</td>
+                <td class="dim">Muscle-memory defaults get used where the operator has deliberately chosen otherwise.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <h3>Why this is a layer and not config</h3>
+      <p>Because it does not vary by repository. Declaring the same identity in three config files means three places to update and three chances to drift. The profile is the one part of the harness that follows the person.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <section id="states">
+      <div class="sec-head">
+        <span class="sec-num">05 — State machine</span>
+        <h2 class="sec">Seven states, mapped onto whatever the tracker already calls them</h2>
+      </div>
+      <p class="lede">The harness thinks in seven states. Config maps each to a real value in the real tracker, so adopting this never requires renaming a column or restructuring a board.</p>
+
+      <div class="flow">
+        <span class="state">captured</span><span class="arrow">→</span>
+        <span class="state">queued</span><span class="arrow">→</span>
+        <span class="state">running</span><span class="arrow">→</span>
+        <span class="state">verified</span><span class="arrow">→</span>
+        <span class="state">in&#8209;review</span><span class="arrow">→</span>
+        <span class="state">shipped</span>
+        <span class="arrow" style="margin-left:14px">·</span>
+        <span class="state stop">blocked</span>
+      </div>
+
+      <div class="tw">
+        <table>
+          <thead>
+            <tr><th>State</th><th>Meaning</th><th>Who may write it</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="k">captured</td><td>Written down, not triaged. Outside the queue.</td><td class="dim">human</td></tr>
+            <tr><td class="k">queued</td><td>In the queue, ready to run, ordered by severity then age.</td><td class="dim">both</td></tr>
+            <tr><td class="k">running</td><td>Being worked. Exactly one at a time per branch.</td><td class="dim">both</td></tr>
+            <tr><td class="k">verified</td><td>Compiles, tests pass, reviewed, committed — <strong>not</strong> pushed.</td><td class="dim">harness</td></tr>
+            <tr><td class="k">in-review</td><td>Included in the run's open pull request.</td><td class="dim">harness</td></tr>
+            <tr><td class="k">blocked</td><td>This task is stuck and set aside. Its work is stashed, the queue continues.</td><td class="dim">harness</td></tr>
+            <tr><td class="k">shipped</td><td>Merged and released to users.</td><td class="dim">human only</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>The harness never says "done"</h3>
+      <p>Its terminal state is <code>in-review</code>, with a pull request open and every included ticket linked to it. Whether something is genuinely finished is a judgment about users, and that stays with the person who merges and deploys.</p>
+
+      <h3>Iteration is whatever the project already uses</h3>
+      <p>There is no sprint object in the harness. The config points one key at whatever the project treats as its current iteration — a cycle, a sprint, a milestone, a version in development. The playbook only ever asks for <em>the current iteration</em> and lets the tracker layer resolve it. A team running two-week cycles and a solo project shipping versions both satisfy the same contract.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <section id="taxonomy">
+      <div class="sec-head">
+        <span class="sec-num">06 — Change taxonomy</span>
+        <h2 class="sec">One field on the ticket decides the commit type</h2>
+      </div>
+      <p class="lede">Every ticket declares the nature of its change. This is not metadata for filtering — the commit message derives from it, which is what stops a ticket being a wish and makes it an instruction.</p>
+
+      <div class="tw">
+        <table>
+          <thead>
+            <tr><th>Change</th><th>Commit</th><th>When</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="k">add</td><td class="k">feat</td><td>Something that did not exist before</td></tr>
+            <tr><td class="k">change</td><td class="k">feat</td><td>It existed and now behaves differently</td></tr>
+            <tr><td class="k">remove</td><td class="k">feat</td><td>Something is taken out</td></tr>
+            <tr><td class="k">fix</td><td class="k">fix</td><td>It goes back to doing what it already promised</td></tr>
+            <tr><td class="k">refactor</td><td class="k">refactor</td><td>Same behaviour, better code</td></tr>
+            <tr><td class="k">tooling</td><td class="k">chore</td><td>Build, deploy, scripts, documentation</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin-top:18px">This is the portable core. Config may extend it, and a domain usually needs one or two entries of its own — a category that would otherwise get mislabelled every time, mapped to whatever commit type that domain already uses.</p>
+      <p>Two constraints on any extension. It must be <strong>small enough that the right answer is obvious</strong>: a twelve-option picker guarantees a wrong pick, and a wrong pick here silently corrupts commit history. And every entry must map to exactly one commit type, or the field stops being able to decide anything.</p>
+      <p>The same field also drives the ticket's icon, which makes a board legible at a glance without reading a single title.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <section id="schema">
+      <div class="sec-head">
+        <span class="sec-num">07 — Config schema</span>
+        <h2 class="sec">Every project-specific noun, in one validated file</h2>
+      </div>
+      <p class="lede">This is where agnosticism is either real or merely claimed. If a key is missing here, a playbook somewhere is guessing — and the fix is a new key, never a sentence added to the core.</p>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Key</th><th>Purpose</th><th>Shape</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="k">harness.version</td>
+              <td>The core version this repository was written against. Checked at the start of every run: a minor mismatch warns, a major one refuses. The safety belt for a single global core shared by several projects.</td>
+              <td class="dim">Semantic version</td>
+            </tr>
+            <tr>
+              <td class="k">stack</td>
+              <td>Selects the preset the installer starts from and the conventions the playbooks assume about file layout.</td>
+              <td class="dim">One preset name</td>
+            </tr>
+            <tr>
+              <td class="k">tracker.kind</td>
+              <td>Which tracker backend document to load. Determines how every ticket operation is performed.</td>
+              <td class="dim">One backend name</td>
+            </tr>
+            <tr>
+              <td class="k">tracker.board</td>
+              <td>The board, project, or team the queue is read from. An environment variable reference, never a literal identifier in a committed file.</td>
+              <td class="dim">Env reference</td>
+            </tr>
+            <tr>
+              <td class="k">tracker.states</td>
+              <td>Maps each of the six harness states to the literal value this tracker uses. The whole state machine is portable because of this map.</td>
+              <td class="dim">State → string</td>
+            </tr>
+            <tr>
+              <td class="k">tracker.iteration</td>
+              <td>Where "the current iteration" comes from, and the condition that identifies which one is current.</td>
+              <td class="dim">Source + predicate</td>
+            </tr>
+            <tr>
+              <td class="k">tracker.assignee</td>
+              <td>Who new tickets are assigned to, when the tracker models people at all.</td>
+              <td class="dim">Identity or omitted</td>
+            </tr>
+            <tr>
+              <td class="k">tracker.shared</td>
+              <td>Whether humans also write the mapped states. When true, the harness marks its own entries and ignores unmarked ones in silence.</td>
+              <td class="dim">Boolean</td>
+            </tr>
+            <tr>
+              <td class="k">tracker.marker_field</td>
+              <td>The text field the ownership marker is written into. Required whenever the board is shared.</td>
+              <td class="dim">Field name</td>
+            </tr>
+            <tr>
+              <td class="k">tracker.cache_ttl</td>
+              <td>How long a queue read may be reused. Exists because rate-limited query APIs are common and a status check should not spend quota.</td>
+              <td class="dim">Duration</td>
+            </tr>
+            <tr>
+              <td class="k">verify[]</td>
+              <td>The ordered gate. Each entry names a check, how to run it, and the condition that counts as passing. Runs in sequence; the first failure stops the task.</td>
+              <td class="dim">Ordered list</td>
+            </tr>
+            <tr>
+              <td class="k">verify[].scope</td>
+              <td>How narrowly a check may be run — the narrowest relevant suite first, widening only for broad changes.</td>
+              <td class="dim">Scope hint</td>
+            </tr>
+            <tr>
+              <td class="k">vcs.branch</td>
+              <td>Branch policy: stay on the current branch, or derive one per ticket from a pattern.</td>
+              <td class="dim">Policy or pattern</td>
+            </tr>
+            <tr>
+              <td class="k">vcs.push</td>
+              <td>Whether the harness may push, must ask first, or never pushes. Pushing is outward-facing, so the default is the most conservative option and anything else is a recorded authorisation.</td>
+              <td class="dim">never · ask · always</td>
+            </tr>
+            <tr>
+              <td class="k">vcs.pr.enabled</td>
+              <td>Whether the ship playbook runs at all. A repository with no review culture stops at verified and committed.</td>
+              <td class="dim">Boolean</td>
+            </tr>
+            <tr>
+              <td class="k">vcs.pr.granularity</td>
+              <td>One PR per run, or one per ticket. Per-ticket requires a branch-per-ticket policy; the two keys are validated together because the wrong pairing silently produces one PR that swallows the run.</td>
+              <td class="dim">run · ticket</td>
+            </tr>
+            <tr>
+              <td class="k">vcs.pr.draft</td>
+              <td>Whether the PR opens as a draft and when it is marked ready — typically at the end of a clean run.</td>
+              <td class="dim">Policy</td>
+            </tr>
+            <tr>
+              <td class="k">vcs.pr.link</td>
+              <td>How a PR references its tickets. A URL in the body for trackers that live elsewhere; a closing keyword and issue number for trackers native to the forge.</td>
+              <td class="dim">url · issue-ref</td>
+            </tr>
+            <tr>
+              <td class="k">vcs.attribution</td>
+              <td>Whether generated work may be credited in commit trailers or PR bodies. Applies to both or neither — a clean history undermined by a PR footer is not a clean history.</td>
+              <td class="dim">none · pr-only</td>
+            </tr>
+            <tr>
+              <td class="k">vcs.language</td>
+              <td>The language commit messages are written in, independent of the reply language.</td>
+              <td class="dim">Language code</td>
+            </tr>
+            <tr>
+              <td class="k">vcs.commit_map</td>
+              <td>Change taxonomy entry to commit type. Extends the portable core for this domain.</td>
+              <td class="dim">Change → type</td>
+            </tr>
+            <tr>
+              <td class="k">rules[]</td>
+              <td>Hard prohibitions specific to this repository, injected verbatim into every sub-agent prompt. The escape hatch that keeps local exceptions out of the core.</td>
+              <td class="dim">List of statements</td>
+            </tr>
+            <tr>
+              <td class="k">preflight[]</td>
+              <td>Conditions checked once before a run starts, each able to halt it: toolchain reachable, no conflicting editor state, expected branch, clean working tree, and — whenever pushing is enabled — that the current branch is not the default one.</td>
+              <td class="dim">List of checks</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>What the installer fills in, and what it refuses to guess</h3>
+      <p>Stack detection reads what is on disk and picks a preset, which supplies sensible defaults for most keys. The verification chain is the exception: the installer proposes it and requires confirmation, because this is the one place the harness can be actively dangerous rather than merely useless. A gate that always passes is worse than no gate — it converts unverified work into work stamped as verified.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <section id="invariants">
+      <div class="sec-head">
+        <span class="sec-num">08 — Invariants</span>
+        <h2 class="sec">Five rules the whole thing rests on</h2>
+      </div>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Invariant</th><th>Why it exists</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="k">The tracker is truth.<br>Local state is a cursor.</td>
+              <td>The local file caches queue order and which ticket is running. Delete it and it rebuilds from the board — the running ticket <em>is</em> the one in the running state. No state exists only on one disk, so a second machine or a fresh session is never blind.</td>
+            </tr>
+            <tr>
+              <td class="k">The gate is delegated,<br>never invented.</td>
+              <td>Verification is whatever the project declares, run by the verify playbook. The harness reads a pass or a fail; it never decides for itself that code is fine. Where an executable check exists, an opinion does not count.</td>
+            </tr>
+            <tr>
+              <td class="k">A stuck task steps aside.<br>A broken environment stops everything.</td>
+              <td>Two different failures deserve two different answers. A task that can't be finished has its work moved to a <em>named, recorded</em> stash, its ticket marked blocked, and the queue carries on — one bad ticket shouldn't freeze the other nine. A broken environment stops the run outright, because without a working gate nothing after it can be verified. Never discard work: stash it, record the reference <em>and</em> the message, and report where it is.</td>
+            </tr>
+            <tr>
+              <td class="k">Planning is the exception.</td>
+              <td>Spec-driven planning triggers only for protocol changes, migrations, anything touching money or persistence, work spanning several subsystems, or an unresolved product decision. Everything else goes direct. A three-line fix that gets a design document teaches everyone to skip design documents.</td>
+            </tr>
+            <tr>
+              <td class="k">One writer for history<br>and for the tracker.</td>
+              <td>The orchestrator commits and updates the board; sub-agents implement and report. Two writers on one piece of state is how history becomes unattributable and a board starts to lie.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <section id="notes">
+      <div class="sec-head">
+        <span class="sec-num">09 — Field notes</span>
+        <h2 class="sec">Two defects that only appeared when it ran</h2>
+      </div>
+      <p class="lede">Both survived design review and died within minutes of contact with real data. They are recorded here because each one generalises well past this harness, and because a spec listing only what works is a brochure.</p>
+
+      <div class="note">
+        <p class="label">Defect 01 — surfaced by a read-only status call</p>
+        <h3>The board is shared, and the design assumed it was not</h3>
+        <p>The state machine treated <em>running</em> and <em>blocked</em> as belonging to the harness. In reality the board already held several tickets parked in the running state as personal work-in-progress, and more in the blocked state used as frozen backlog. On its first run the harness would have halted demanding answers about tickets that were never its own, and its genuine failures would have been indistinguishable from a human's parking spot.</p>
+        <p><strong>Fix:</strong> states are shared; a marker written into a text field disambiguates ownership. An entry without the marker belongs to the human and is ignored in silence — not queued, not reported, not asked about. A marker in an existing text field was chosen over a new column so adoption requires no schema change and the board stays readable to someone who has never heard of the harness.</p>
+        <p><strong>Generalises to:</strong> before designing on top of a shared external system, look at how it is actually used, not at what its schema permits. A status field with seven options does not imply each option has one owner.</p>
+      </div>
+
+      <div class="note">
+        <p class="label">Defect 02 — surfaced only at implementation time</p>
+        <h3>"Can't do X" has two opposite readings</h3>
+        <p>A ticket phrased as an inability was triaged as a complaint: a limit exists, remove it. Investigation confirmed no limit existed anywhere in the code, and that finding was read as <em>the limit is emergent</em> — producing a plan to raise capacity. The actual request was the reverse: please add a limit. "No limit exists" was not a clue. It was the answer.</p>
+        <p><strong>Fix:</strong> capture resolves that ambiguity by asking, before any investigation begins. No amount of code reading disambiguates it, because both readings are consistent with the same code.</p>
+        <p><strong>Generalises to:</strong> the same trap hides in "X is missing" — broken, or never built? — and in "X doesn't work as expected", where the expectation is the undeclared half. One question costs a turn. An inverted ticket costs a full implementation; this one cost exactly that, and the queue caught it only because failure stops instead of continuing.</p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════ -->
+    <section id="install">
+      <div class="sec-head">
+        <span class="sec-num">10 — Install</span>
+        <h2 class="sec">Cloned once. Wired per repository. One committed file.</h2>
+      </div>
+      <p class="lede">The harness lives in exactly one place on a machine. A project doesn't receive a copy — it receives a pointer and a config file, and the config file is the only thing that enters version control.</p>
+
+      <div class="code" style="margin-bottom:30px">
+        <p class="code-cap">Home — one clone per machine</p>
+<pre>~/.harness/
+├─ profile/                  <span class="c"># L0 — the operator, one per human</span>
+├─ core/
+│  ├─ capture
+│  ├─ plan
+│  ├─ execute
+│  ├─ verify
+│  ├─ ship
+│  └─ state-machine          <span class="c"># no tool names live anywhere in here</span>
+├─ schema/                   <span class="c"># L2 — validates every config file</span>
+├─ presets/                  <span class="c"># one per stack</span>
+├─ trackers/                 <span class="c"># one per backend: how to speak it</span>
+├─ adapters/                 <span class="c"># L3 — templates, one per agent</span>
+└─ bin/                      <span class="c"># the installer</span></pre>
+      </div>
+
+      <div class="code">
+        <p class="code-cap">A project after init — what is tracked, and what is not</p>
+<pre>your-repo/
+├─ .harness/
+│  ├─ config.yml             <span class="c">COMMITTED — the only file that is</span>
+│  └─ state.json             <span class="c">excluded — machine-local cursor</span>
+├─ &lt;agent adapter files&gt;     <span class="c">excluded — generated pointers</span>
+└─ .git/info/exclude         <span class="c">local-only ignore, never travels</span></pre>
+      </div>
+
+      <h3>Why only the config is committed</h3>
+      <p>Config is project truth — the verification chain, the state mapping, the repository's hard rules. It belongs in review like any other project configuration, and it is safe to commit because it holds environment-variable references, never literal identifiers or tokens.</p>
+      <p>Adapters are generated pointers to the global core. Committing them would be committing build output, and it would push one person's choice of agent into everyone else's tree. A teammate who adopts the harness runs init against the committed config and gets adapters shaped for <em>their</em> agent — a better outcome than inheriting yours.</p>
+      <p>The exclusion uses the repository's <strong>local-only ignore file</strong> rather than the shared one. Personal tooling should not appear in a shared ignore list, and using the local mechanism means the harness can be installed into a repository whose ignore rules you have no business editing.</p>
+      <p>Cloning that repository on another machine therefore yields the config and nothing else — which is sufficient. Re-running init reads the existing config and rebuilds every adapter. Config being committed is precisely what allows adapters not to be.</p>
+
+      <h3>One global core needs version pinning to be safe</h3>
+      <p>The cost of a single shared copy is that updating it changes behaviour everywhere at once, including in a project mid-run. So the committed config declares the harness version it expects, and every playbook checks it before starting: a minor mismatch warns and continues, a major mismatch refuses to run and says what to do about it.</p>
+      <p>Without that check, "one global copy" is a footgun — an upgrade for one project silently rewrites the rules of the other two. With it, drift is loud, and each repository states in version control which contract it was written against.</p>
+
+      <h3>What init does</h3>
+
+      <ol class="steps">
+        <li><span class="sn">01</span><span class="d"><strong>Ensure the core exists</strong>Clone it to the home location if this machine doesn't have it yet, otherwise use what's there. Updating the harness is a pull in one directory.</span></li>
+        <li><span class="sn">02</span><span class="d"><strong>Detect the stack</strong>Reads manifests, project files and lockfiles, then selects a preset. Ambiguous or unrecognised repositories get asked rather than assumed.</span></li>
+        <li><span class="sn">03</span><span class="d"><strong>Choose the tracker</strong>Pick a backend and point it at a board through an environment variable. One connection reaches one workspace, which is why this is per-project config and not a global setting.</span></li>
+        <li><span class="sn">04</span><span class="d"><strong>Map the states</strong>Read the tracker's existing status values and map the harness states onto them. Nothing in the tracker is renamed or restructured.</span></li>
+        <li><span class="sn">05</span><span class="d"><strong>Confirm the verification chain</strong>The preset proposes an ordered gate; the operator confirms or corrects it before anything is written. This is the only step that cannot be skipped.</span></li>
+        <li><span class="sn">06</span><span class="d"><strong>Generate adapters</strong>Write pointer files for the agents actually in use. Each records what its agent lacks, so the playbooks adapt instead of assuming. <strong>Never edit a tracked file the harness doesn't own</strong> — if an agent's manifest already exists in version control, stop and ask rather than appending to it.</span></li>
+        <li><span class="sn">07</span><span class="d"><strong>Commit one, exclude the rest</strong>Emit the config for version control; add the adapters and the cursor file to the local-only ignore. Print exactly what was written and what was excluded, so nothing about the install is implicit.</span></li>
+      </ol>
+
+      <h3>Connecting the integrations</h3>
+      <p>The harness assumes nothing about credentials. Each tracker document lists the server it needs and the minimum capability it depends on — typically the ability to query a collection of tickets and update one. Because a single connection reaches a single workspace, a personal tracker and a work tracker coexist without either knowing the other exists.</p>
+    </section>
+
+    <footer>
+      <p class="sig">Draft spec · v0.1</p>
+      <p>This document is the specification, not a description of something already finished. The four playbooks and one tracker backend exist and have run against real work; the config layer, the installer, the second adapter, and the profile are what this page defines. Corrections to the design belong here before they belong in code.</p>
+    </footer>
+
+  </main>
+</div>

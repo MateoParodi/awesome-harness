@@ -1,0 +1,10 @@
+{
+  "name": "awesome-harness",
+  "version": "0.1.0",
+  "description": "One playbook for turning a thought into a shipped commit. Any repo, any stack, any agent.",
+  "playbooks": ["capture", "plan", "execute", "verify", "ship"],
+  "adapters": ["claude-code", "agents-md"],
+  "trackers": ["notion", "github-issues"],
+  "presets": ["node", "editor-driven"],
+  "license": "MIT"
+}

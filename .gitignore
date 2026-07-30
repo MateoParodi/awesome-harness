@@ -1,0 +1,8 @@
+# The operator profile is personal. This repository is public.
+# Copy TEMPLATE.md to me.md and fill it in — me.md never gets committed.
+profile/me.md
+profile/*.local.md
+
+# Editor and OS noise
+.DS_Store
+*.swp
