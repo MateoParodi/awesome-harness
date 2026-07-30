@@ -1,4 +1,4 @@
-# capture
+# create-task
 
 Turn a loose description of a bug or a task into an executable ticket, and enqueue it.
 

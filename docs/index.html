@@ -469,7 +469,7 @@
 
   <main>
 
-    <p class="eyebrow">Operator harness · v0.1 · draft spec</p>
+    <p class="eyebrow">Operator harness · v0.2 · early implementation</p>
     <h1>Awesome <em>Harness</em></h1>
     <p class="thesis">One playbook for turning a thought into a shipped commit. Any repo, any stack, any agent.</p>
 
@@ -497,10 +497,10 @@
         <div class="band core">
           <span class="tag">Core playbook</span>
           <span class="items">
-            <span class="chip">capture</span>
-            <span class="chip">plan</span>
-            <span class="chip">execute</span>
-            <span class="chip">verify</span>
+            <span class="chip">create-task</span>
+            <span class="chip">start-task</span>
+            <span class="chip">pipeline</span>
+            <span class="chip">review-and-fix</span>
             <span class="chip">ship</span>
           </span>
         </div>
@@ -542,22 +542,22 @@
           </thead>
           <tbody>
             <tr>
-              <td class="k">capture</td>
+              <td class="k">create-task</td>
               <td>Reconnaissance in the code, then a short interview, then a ticket carrying a reproduction, a verified root cause where one is findable, and an acceptance criterion. Enqueues it.</td>
               <td class="dim">Write feature code. Commit. Start the work.</td>
             </tr>
             <tr>
-              <td class="k">plan</td>
+              <td class="k">start-task</td>
               <td>Spec-driven planning for the rare ticket that earns it: explore, propose, specify, design, break into tasks. Stops at the planning boundary.</td>
               <td class="dim">Implement. A three-line fix never sees a spec.</td>
             </tr>
             <tr>
-              <td class="k">execute</td>
+              <td class="k">pipeline</td>
               <td>Status, and the engine: take the top ticket, dispatch it to a fresh sub-agent, gate it, commit it, update the tracker, continue. Pause, resume, skip, resync.</td>
               <td class="dim">Deploy. Push. Change branch. Revert on failure.</td>
             </tr>
             <tr>
-              <td class="k">verify</td>
+              <td class="k">review-and-fix</td>
               <td>Independent blind review, triage, fix, run the project's real checks, then a fresh blind re-review against the final diff. Caps its own loop.</td>
               <td class="dim">Trust its own opinion when an executable check exists.</td>
             </tr>
@@ -579,7 +579,7 @@
       <p>Everything before this point is local and reversible. Pushing is outward-facing: it reaches teammates, triggers pipelines, and cannot be quietly undone. So the harness treats it as requiring explicit standing authorisation recorded in config, and refuses to start a run on the default branch — because auto-push plus a default branch means pushing straight to it.</p>
 
       <h3>Agents straddle the seam on purpose</h3>
-      <p>The verify playbook launches three: a standard reviewer, a critical reviewer for high-risk diffs, and a fixer. Their <strong>behaviour</strong> is core — identical in every project. Their <strong>tool list and model are generated from the project config</strong>, because what an agent may touch depends on the repository it is standing in.</p>
+      <p>The review-and-fix playbook launches three: a standard reviewer, a critical reviewer for high-risk diffs, and a fixer. Their <strong>behaviour</strong> is core — identical in every project. Their <strong>tool list and model are generated from the project config</strong>, because what an agent may touch depends on the repository it is standing in.</p>
       <p>The reviewers are given read-only tool lists, so they are read-only <em>by construction</em> rather than by instruction — an agent that physically cannot write cannot be talked into writing. The fixer gets whatever this project's verification actually needs. When the gate runs through an editor or tool integration and the fixer lacks its tools, it edits blind and reports fixes it never validated, so the installer refuses to leave that silent.</p>
 
       <h3>Why execution delegates to a sub-agent</h3>
@@ -958,7 +958,7 @@
         <p class="label">Defect 02 — surfaced only at implementation time</p>
         <h3>"Can't do X" has two opposite readings</h3>
         <p>A ticket phrased as an inability was triaged as a complaint: a limit exists, remove it. Investigation confirmed no limit existed anywhere in the code, and that finding was read as <em>the limit is emergent</em> — producing a plan to raise capacity. The actual request was the reverse: please add a limit. "No limit exists" was not a clue. It was the answer.</p>
-        <p><strong>Fix:</strong> capture resolves that ambiguity by asking, before any investigation begins. No amount of code reading disambiguates it, because both readings are consistent with the same code.</p>
+        <p><strong>Fix:</strong> create-task resolves that ambiguity by asking, before any investigation begins. No amount of code reading disambiguates it, because both readings are consistent with the same code.</p>
         <p><strong>Generalises to:</strong> the same trap hides in "X is missing" — broken, or never built? — and in "X doesn't work as expected", where the expectation is the undeclared half. One question costs a turn. An inverted ticket costs a full implementation; this one cost exactly that, and the queue caught it only because failure stops instead of continuing.</p>
       </div>
     </section>
@@ -976,12 +976,13 @@
 <pre>~/.harness/
 ├─ profile/                  <span class="c"># L0 — the operator, one per human</span>
 ├─ core/
-│  ├─ capture
-│  ├─ plan
-│  ├─ execute
-│  ├─ verify
+│  ├─ create-task
+│  ├─ start-task
+│  ├─ pipeline
+│  ├─ review-and-fix
 │  ├─ ship
 │  └─ state-machine          <span class="c"># no tool names live anywhere in here</span>
+├─ agents/                   <span class="c"># reviewer · critical-reviewer · fixer</span>
 ├─ schema/                   <span class="c"># L2 — validates every config file</span>
 ├─ presets/                  <span class="c"># one per stack</span>
 ├─ trackers/                 <span class="c"># one per backend: how to speak it</span>
@@ -1006,7 +1007,7 @@
       <p>Cloning that repository on another machine therefore yields the config and nothing else — which is sufficient. Re-running init reads the existing config and rebuilds every adapter. Config being committed is precisely what allows adapters not to be.</p>
 
       <h3>One global core needs version pinning to be safe</h3>
-      <p>The cost of a single shared copy is that updating it changes behaviour everywhere at once, including in a project mid-run. So the committed config declares the harness version it expects, and every playbook checks it before starting: a minor mismatch warns and continues, a major mismatch refuses to run and says what to do about it.</p>
+      <p>The cost of a single shared copy is that updating it changes behaviour everywhere at once, including in a project mid-run. So the committed config declares the harness version it expects, and every playbook checks it before starting. While the core is 0.x, a <em>minor</em> mismatch refuses to run — 0.x minors are breaking by semver convention, and the 0.1 → 0.2 playbook rename is exactly the kind of change this check exists to catch; a patch mismatch warns. From 1.0.0 the usual rule applies: major refuses, minor warns. Recovery is always the same: re-run init to regenerate the adapters, then bump the pinned version.</p>
       <p>Without that check, "one global copy" is a footgun — an upgrade for one project silently rewrites the rules of the other two. With it, drift is loud, and each repository states in version control which contract it was written against.</p>
 
       <h3>What init does</h3>
@@ -1026,7 +1027,7 @@
     </section>
 
     <footer>
-      <p class="sig">Draft spec · v0.1</p>
+      <p class="sig">Spec · v0.2</p>
       <p>This document is the specification, not a description of something already finished. The four playbooks and one tracker backend exist and have run against real work; the config layer, the installer, the second adapter, and the profile are what this page defines. Corrections to the design belong here before they belong in code.</p>
     </footer>
 

@@ -1,4 +1,4 @@
-# execute
+# pipeline
 
 The control panel and the engine. Reads the queue, runs it one ticket at a time, commits,
 and keeps the tracker honest.

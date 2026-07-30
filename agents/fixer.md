@@ -1,6 +1,6 @@
 # Agent — fixer
 
-Applies accepted review findings. Launched by the **verify** playbook after triage, never
+Applies accepted review findings. Launched by the **review-and-fix** playbook after triage, never
 before — it fixes what a human-in-the-loop orchestrator already decided is real.
 
 **Behaviour is L1; frontmatter is generated per project (L2)** — and this agent is the

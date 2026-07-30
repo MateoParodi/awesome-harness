@@ -1,8 +1,8 @@
 # Agent — critical reviewer
 
-Same contract as the standard reviewer, slower and deeper. Launched by the **verify**
-playbook when the diff touches something that can hurt real users, real money, or real
-data.
+Same contract as the standard reviewer, slower and deeper. Launched by the
+**review-and-fix** playbook when the diff touches something that can hurt real users, real
+money, or real data.
 
 **Behaviour is L1; frontmatter is generated per project (L2).**
 

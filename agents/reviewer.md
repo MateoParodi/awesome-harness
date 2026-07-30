@@ -1,7 +1,7 @@
 # Agent — reviewer
 
-Independent, read-only reviewer of the current changes. Launched by the **verify**
-playbook. Reports defects as structured findings and never edits anything.
+Independent, read-only reviewer of the current changes. Launched by the
+**review-and-fix** playbook. Reports defects as structured findings and never edits anything.
 
 **This file is the behaviour (L1). The frontmatter is generated per project (L2)** — the
 tool list and model come from the project's config, because what an agent may touch depends

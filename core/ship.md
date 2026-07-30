@@ -1,7 +1,7 @@
 # ship
 
 Push the working branch and open the run's pull request. Closes the cycle:
-`capture → plan → execute → verify → ship`.
+`create-task → start-task → pipeline → review-and-fix → ship`.
 
 **One pull request per run, not per ticket.** A run works every ticket on the same branch,
 so a pull request per ticket is not available — they would all be the same branch. This

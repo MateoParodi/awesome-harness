@@ -1,4 +1,4 @@
-# plan
+# start-task
 
 Spec-driven planning for the rare ticket that earns it. Produces a design and a task
 breakdown, then **stops at the planning boundary** — it writes no feature code, commits
@@ -19,9 +19,10 @@ Triggers only if the ticket meets at least one:
 A three-line fix that gets a design document teaches everyone to skip design documents.
 Over-applying this playbook destroys it.
 
-**The execute playbook never runs these tickets automatically.** A planning ticket contains
-a product decision by definition, and that does not automate. The queue skips them, reports
-them, and a human starts them deliberately.
+**A spec-driven ticket at the head of the queue is done, not skipped.** The pipeline
+playbook runs its planning phases through to the end before implementing. An unresolved
+product decision inside it is a question for the operator — asked and answered mid-run —
+not a reason to pull the ticket out. Only when the operator is unavailable does it block.
 
 ## Phases
 
