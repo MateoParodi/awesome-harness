@@ -73,12 +73,20 @@ Stop and ask if any of these fails. Each one covers a concrete way to destroy wo
 Top of the queue. Read the whole thing, body included — the reproduction, the root cause
 and the acceptance criteria live there.
 
-**If the plan is spec-driven, skip it.** Leave it queued, record it as skipped, continue.
-Such a ticket contains a product decision by definition, and that does not automate.
-Without this rule a single planning ticket at the head blocks everything behind it.
+**A spec-driven ticket is not skipped — it is done**, running its planning phases through
+to the end before implementing. That changes the dispatch step only; the gate, the commit
+and the close are identical. You remain the sole writer of history and of the tracker.
 
-**If it has an unresolved open decision, skip it too**, with that reason. Do not decide for
-the operator.
+**An unresolved product decision is a question, not a blocker.** Ask it — real options,
+their trade-offs, your recommendation first and why — then carry on with the answer. A
+decision costs the operator two minutes; removing the ticket from the queue costs a whole
+run. Only if the operator is unavailable does it become a class A block, recorded with
+exactly which decision is missing.
+
+> These two rules replace an earlier "skip anything spec-driven". That shortcut pulled
+> tickets out of the queue that in practice unblocked with a single question — and a
+> planning ticket at the head of the queue would strand everything behind it. Skipping was
+> the easy answer, not the correct one.
 
 Set the ticket to `running` and write the marker into the configured field, preserving what
 was already there.

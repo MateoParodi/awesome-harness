@@ -112,21 +112,41 @@ check: passed, failed, could-not-run, pre-existing failure, or skipped with a re
 
 ## Phase 6 — Fresh re-review
 
+### Skip it when nothing changed
+
+**If phase 2 returned no correctness findings and phase 4 edited nothing, skip this phase.**
+The diff is byte-for-byte what the first reviewer already read, so a "fresh" review buys a
+second opinion on unchanged code — which is not what this phase is for. Go to the report
+and record the re-review as skipped.
+
+This phase exists to catch **what the fixes broke**. No fixes, nothing to catch. It does
+apply when only quality fixes were made: those are still edits.
+
+On a clean change this is roughly half the total cost of a review, spent on nothing.
+
+### Otherwise
+
 A **brand-new** reviewer, same mode, reviewing the complete final diff. Do not reuse the
 earlier reviewer or its reasoning. Focus on remaining findings, regressions introduced by
 the fixes, incomplete fixes, weak tests, newly exposed edge cases.
 
-Actionable correctness findings → another cycle. **Cap the total; stop as soon as
-correctness comes back clean.** Never loop on quality: apply the safe ones once, carry the
-rest into the report as proposals.
+Actionable correctness findings → another cycle. **Cap at two cycles total**, and stop as
+soon as correctness comes back clean. Never loop on quality: apply the safe ones once,
+carry the rest into the report as proposals.
+
+Two is where the returns stop. If an independent reviewer, a fixer and a second independent
+reviewer have not converged, a third round mostly re-litigates the same disagreement. A
+defect that survives two blind reviewers should go to a human — which is what **blocked**
+is for.
 
 ---
 
 ## Phase 7 — Report
 
-State the mode and scope; correctness and quality counts (found, fixed, rejected,
-deferred); files changed with a line each; quality proposals not applied; every validation
-check with its labelled result; remaining risks.
+State the mode and scope; **whether the re-review ran or was skipped, and why**; correctness
+and quality counts (found, fixed, rejected, deferred); files changed with a line each;
+quality proposals not applied; every validation check with its labelled result; remaining
+risks.
 
 End with a single verdict — **pass**, **pass with warnings**, or **blocked** — because that
 line is the gate the pipeline playbook reads.
