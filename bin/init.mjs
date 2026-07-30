@@ -165,6 +165,11 @@ vcs:
     draft: true
     link: ${answers.tracker === "github-issues" ? "issue-ref" : "url"}
 
+agents:
+  review_model: ${answers.reviewModel}
+  critical_model: ${answers.criticalModel}
+  extra_tools: [${answers.extraTools.join(", ")}]
+
 rules: []
 
 preflight:
@@ -204,6 +209,51 @@ Before starting, compare \`harness.version\` in the config against the core vers
 `);
     written.push(path);
     excluded.push(`.claude/skills/${pb}/`);
+  }
+}
+
+/**
+ * Reviewer and fixer definitions.
+ *
+ * The behaviour lives in ~/.harness/agents/ and is pointed at, not copied. The frontmatter
+ * is generated here because it is project-specific: read-only tools for the reviewers, and
+ * for the fixer whatever this project's verify chain actually needs to compile and test.
+ */
+function writeReviewAgents(answers) {
+  const roles = [
+    { file: "reviewer",          core: "reviewer",          tools: "Read, Grep, Glob, Bash", model: answers.reviewModel },
+    { file: "critical-reviewer", core: "critical-reviewer", tools: "Read, Grep, Glob, Bash", model: answers.criticalModel },
+    { file: "fixer",             core: "fixer",             tools: ["Read", "Grep", "Glob", "Edit", "Write", "Bash", ...answers.extraTools].join(", "), model: answers.reviewModel },
+  ];
+
+  for (const r of roles) {
+    const path = join(".claude", "agents", `${r.file}.md`);
+    if (isTracked(path)) {
+      warnings.push(`${path} is TRACKED — left untouched.`);
+      continue;
+    }
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, `---
+name: ${r.file}
+description: Harness ${r.file}. Behaviour defined in ~/.harness/agents/${r.core}.md
+tools: ${r.tools}
+model: ${r.model}
+---
+
+Follow the agent definition at \`~/.harness/agents/${r.core}.md\` exactly.
+
+Project rules and the verification chain you must respect are in \`.harness/config.yml\`.
+`);
+    written.push(path);
+  }
+  excluded.push(".claude/agents/");
+
+  if (answers.hasIntegrationCheck && !answers.extraTools.length) {
+    warnings.push(
+      `The verify chain has a check that runs through an integration, but agents.extra_tools is empty.\n` +
+      `    The fixer will not be able to validate its own edits — add the integration's tools to\n` +
+      `    .harness/config.yml before the first run.`
+    );
   }
 }
 
@@ -363,10 +413,21 @@ try {
   answers.push = await ask("\npush policy? (never · ask · always)", "never");
   answers.language = await ask("commit message language?", "en");
 
+  answers.hasIntegrationCheck = /^\s*via:/m.test(answers.verify);
+  answers.reviewModel = await ask("model for reviewer + fixer?", "sonnet");
+  answers.criticalModel = await ask("model for the critical reviewer?", "opus");
+  answers.extraTools = (await ask(
+    `extra tools the fixer needs to run the gate?${answers.hasIntegrationCheck ? c.yellow(" (your chain uses an integration — it needs them)") : ""}`,
+    ""
+  )).split(",").map((s) => s.trim()).filter(Boolean);
+
   const agents = (await ask("adapters? (claude-code, agents-md, both, none)", "claude-code")).toLowerCase();
 
   writeConfig(answers);
-  if (agents.includes("claude") || agents === "both") writeClaudeAdapter(answers);
+  if (agents.includes("claude") || agents === "both") {
+    writeClaudeAdapter(answers);
+    writeReviewAgents(answers);
+  }
   if (agents.includes("agents") || agents === "both") writeAgentsAdapter(answers);
   writeExcludes([...excluded, ".harness/state.json"]);
 

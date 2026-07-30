@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "One playbook for turning a thought into a shipped commit. Any repo, any stack, any agent.",
   "playbooks": ["capture", "plan", "execute", "verify", "ship"],
+  "agents": ["reviewer", "critical-reviewer", "fixer"],
   "adapters": ["claude-code", "agents-md"],
   "trackers": ["notion", "github-issues"],
   "presets": ["node", "editor-driven"],

@@ -206,6 +206,27 @@
       "description": "Conditions checked once before a run starts, each able to halt it: toolchain reachable, no conflicting editor state, expected branch, clean working tree, and — whenever pushing is enabled — that the current branch is not the default one."
     },
 
+    "agents": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Agent behaviour lives in the core; this supplies the per-project half of their definition.",
+      "properties": {
+        "extra_tools": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Tools the fixer needs beyond read/search/edit/shell in order to run this project's verify chain. Required whenever a check runs through an editor or tool integration rather than a shell command — without them the fixer edits blind and reports a fix it never validated."
+        },
+        "review_model": {
+          "type": "string",
+          "description": "Model for the standard reviewer and the fixer."
+        },
+        "critical_model": {
+          "type": "string",
+          "description": "Model for the critical reviewer. Worth the cost only on high-risk diffs."
+        }
+      }
+    },
+
     "planning": {
       "type": "object",
       "additionalProperties": false,

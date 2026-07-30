@@ -7,6 +7,19 @@ then review again with fresh eyes. Returns a single verdict the execute playbook
 reviewers and fixing goes to a separate agent. Reviewer independence is the entire value:
 never hand a reviewer your opinion or a previous reviewer's reasoning.
 
+The three agents this playbook launches are defined in `~/.harness/agents/`:
+
+| Role | Definition | Can edit? |
+|---|---|---|
+| standard review | `agents/reviewer.md` | no — read-only by construction |
+| critical review | `agents/critical-reviewer.md` | no — read-only by construction |
+| fixing | `agents/fixer.md` | yes |
+
+Their behaviour is fixed; their **tool lists and models are generated per project**, because
+what an agent may touch depends on the repository. The fixer in particular needs whatever
+runs this project's verification — if the gate goes through an editor or tool integration
+and the fixer lacks its tools, it edits blind and reports fixes it never validated.
+
 An agent without a sub-agent primitive runs the review inline. Say so in the report — an
 inline review is weaker evidence, and the operator should know which they got.
 

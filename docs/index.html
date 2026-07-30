@@ -578,6 +578,10 @@
       <h3>Pushing is an authorised action, not an assumed one</h3>
       <p>Everything before this point is local and reversible. Pushing is outward-facing: it reaches teammates, triggers pipelines, and cannot be quietly undone. So the harness treats it as requiring explicit standing authorisation recorded in config, and refuses to start a run on the default branch — because auto-push plus a default branch means pushing straight to it.</p>
 
+      <h3>Agents straddle the seam on purpose</h3>
+      <p>The verify playbook launches three: a standard reviewer, a critical reviewer for high-risk diffs, and a fixer. Their <strong>behaviour</strong> is core — identical in every project. Their <strong>tool list and model are generated from the project config</strong>, because what an agent may touch depends on the repository it is standing in.</p>
+      <p>The reviewers are given read-only tool lists, so they are read-only <em>by construction</em> rather than by instruction — an agent that physically cannot write cannot be talked into writing. The fixer gets whatever this project's verification actually needs. When the gate runs through an editor or tool integration and the fixer lacks its tools, it edits blind and reports fixes it never validated, so the installer refuses to leave that silent.</p>
+
       <h3>Why execution delegates to a sub-agent</h3>
       <p>The orchestrator stays thin on purpose: read the queue, pick a ticket, hand it off, commit, move on. Implementation happens in a fresh context that dies with the task. The eighth ticket of a run therefore begins with the orchestrator as clear-headed as the first — which is the difference between a queue that drains and one that degrades into confident nonsense around item four.</p>
       <p>Serial, one ticket at a time, one branch, no worktrees. Parallelism across a single branch buys merge conflicts and diffs nobody can attribute.</p>
@@ -605,7 +609,7 @@
           <div class="layer-id">L1</div>
           <div>
             <h3>Core playbooks — the how</h3>
-            <p>Plain prose, no tool names, no product names. Refers only to abstract operations the config is required to supply: create a ticket, move a ticket, compile, test, commit, open a pull request. Also holds the state machine, the change taxonomy, and the failure doctrine.</p>
+            <p>Plain prose, no tool names, no product names. Refers only to abstract operations the config is required to supply: create a ticket, move a ticket, compile, test, commit, open a pull request. Also holds the state machine, the change taxonomy, the failure doctrine, and the definitions of the review agents.</p>
             <p class="swap">One copy per machine · every project points at it</p>
           </div>
         </div>

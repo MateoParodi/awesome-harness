@@ -15,7 +15,17 @@ them to the repository's local-only ignore file.
 .claude/skills/execute/SKILL.md
 .claude/skills/verify/SKILL.md
 .claude/skills/ship/SKILL.md
+.claude/agents/reviewer.md
+.claude/agents/critical-reviewer.md
+.claude/agents/fixer.md
 ```
+
+The three agents are pointers too, but their **frontmatter is generated rather than
+fixed** — `tools` and `model` come from the project config. Reviewers get read-only tool
+lists so they are read-only *by construction* rather than by instruction; the fixer gets
+whatever the project's verify chain needs to compile and test. If that chain runs through
+an integration and its tools are missing, the fixer cannot validate its own edits, and the
+installer says so.
 
 Each file is frontmatter plus a short body that points at three things: the playbook in the
 global core, the project config, and the operator profile. The playbook text itself is never

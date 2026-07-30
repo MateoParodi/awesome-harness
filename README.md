@@ -111,6 +111,7 @@ is a footgun.
 ~/.harness/
 ├─ profile/     L0 — the operator: who the agent works for. One per human.
 ├─ core/        L1 — the playbooks. No tool names live anywhere in here.
+├─ agents/      L1 — reviewer, critical reviewer, fixer. Behaviour only.
 ├─ schema/      L2 — JSON Schema validating every project config.
 ├─ presets/          stack defaults the installer starts from.
 ├─ trackers/         one document per backend: how to speak it.
@@ -128,6 +129,11 @@ has failed:
   it isn't.
 - **L2 the project** — every project-specific noun, in one validated file.
 - **L3 the wiring** — thin, generated, disposable.
+
+Agents straddle the seam deliberately: their **behaviour** is L1 and identical everywhere,
+while their **tool list and model** are generated from the project config. What an agent
+may touch depends on the repository it is standing in — a fixer that cannot run this
+project's compiler is a fixer that reports work it never checked.
 
 ---
 
