@@ -1,0 +1,29 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # harness.json names are canonical — nothing may reference a retired playbook.
+      - name: name lint
+        run: node bin/lint-names.mjs
+
+      # The schema is only worth having if something runs it.
+      - name: validate presets
+        run: |
+          node bin/validate.mjs presets/node.yml --preset
+          node bin/validate.mjs presets/editor-driven.yml --preset
+
+      # The installer writes into people's repositories; it does not ship untested.
+      - name: installer smoke test
+        run: node bin/test-init.mjs
