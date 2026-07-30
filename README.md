@@ -22,18 +22,18 @@ one codebase's private exceptions. The result works beautifully in exactly one r
 The fix isn't more instruction. It's a boundary.
 
 ```
-        ┌──────────────────────────────────────────┐
-        │  AGENT ADAPTER   generated, not committed│
-        └──────────────────────────────────────────┘
-                            │
-        ╔══════════════════════════════════════════╗
-        ║  CORE PLAYBOOK                           ║
-        ║  capture · plan · execute · verify · ship║
-        ╚══════════════════════════════════════════╝
-                            │
-        ┌──────────────────────────────────────────┐
-        │  PROJECT CONFIG        the only committed│
-        └──────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────┐
+│  AGENT ADAPTER                      generated, never committed│
+└───────────────────────────────────────────────────────────────┘
+                               │
+╔═══════════════════════════════════════════════════════════════╗
+║  CORE PLAYBOOKS                                               ║
+║  create-task · start-task · pipeline · review-and-fix · ship  ║
+╚═══════════════════════════════════════════════════════════════╝
+                               │
+┌───────────────────────────────────────────────────────────────┐
+│  PROJECT CONFIG                        the only committed file│
+└───────────────────────────────────────────────────────────────┘
 ```
 
 The core never names a tool, an identifier, or a language. Everything specific to a
@@ -50,11 +50,15 @@ wearing a general-purpose costume.
 
 | Playbook | Does | Never does |
 |---|---|---|
-| **capture** | Reconnaissance in the code, a short interview, then a ticket with a reproduction, a verified root cause, and an acceptance criterion. Enqueues it. | Writes code. Commits. Starts the work. |
-| **plan** | Spec-driven planning for the rare ticket that earns it. Stops at the planning boundary. | Implements. A three-line fix never sees a spec. |
-| **execute** | Takes the top ticket, dispatches it to a fresh sub-agent, gates it, commits, updates the tracker, continues. | Deploys. Changes branch. Reverts on failure. |
-| **verify** | Independent blind review, triage, fix, run the project's real checks, fresh blind re-review. | Trusts its own opinion when an executable check exists. |
-| **ship** | Pushes the branch and opens the run's pull request as a draft, body built from the tickets. | Merges. Force-pushes. Pushes to the default branch. |
+| **`/create-task`** | Reconnaissance in the code, a short interview, then a ticket with a reproduction, a verified root cause, and an acceptance criterion. Enqueues it. | Writes code. Commits. Starts the work. |
+| **`/start-task`** | Spec-driven planning for the rare ticket that earns it. Stops at the planning boundary. | Implements. A three-line fix never sees a spec. |
+| **`/pipeline`** | Takes the top ticket, dispatches it to a fresh sub-agent, gates it, commits, updates the tracker, continues. | Deploys. Changes branch. Reverts on failure. |
+| **`/review-and-fix`** | Independent blind review, triage, fix, run the project's real checks, fresh blind re-review. | Trusts its own opinion when an executable check exists. |
+| **`/ship`** | Pushes the branch and opens the run's pull request as a draft, body built from the tickets. | Merges. Force-pushes. Pushes to the default branch. |
+
+The names are the commands. Nothing in them is tied to a particular project — they are just
+the clearest description of what each one does, which is worth more than a tidier
+abstraction nobody's fingers remember.
 
 The central split: **capture is cheap and constant, execution is expensive and
 deliberate.** Writing work down happens whenever a thought arrives and starts nothing.

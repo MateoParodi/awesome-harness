@@ -25,7 +25,7 @@ import { fileURLToPath } from "node:url";
 const CORE = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const VERSION = JSON.parse(readFileSync(join(CORE, "harness.json"), "utf8")).version;
 
-const PLAYBOOKS = ["capture", "plan", "execute", "verify", "ship"];
+const PLAYBOOKS = ["create-task", "start-task", "pipeline", "review-and-fix", "ship"];
 const MARK_START = "<!-- awesome-harness:start -->";
 const MARK_END = "<!-- awesome-harness:end -->";
 
@@ -270,7 +270,7 @@ then \`~/.harness/trackers/${answers.tracker}.md\`.
 
 Check \`harness.version\` against \`~/.harness/harness.json\` before starting a run.
 
-Capability note: if this agent has no sub-agent primitive, the execute playbook runs
+Capability note: if this agent has no sub-agent primitive, the pipeline playbook runs
 implementation in the main thread — keep runs short and report that context was not
 isolated.
 ${MARK_END}`;

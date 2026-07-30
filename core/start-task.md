@@ -54,7 +54,7 @@ boundary is wrong.
 **Improve what you touch, nothing else.** Where existing code genuinely obstructs the work,
 include the targeted fix. Do not propose unrelated refactoring.
 
-**Stop at the boundary.** The output is a task list a human hands to the execute playbook.
+**Stop at the boundary.** The output is a task list a human hands to the pipeline playbook.
 Crossing into implementation here loses the review point that justified planning in the
 first place.
 

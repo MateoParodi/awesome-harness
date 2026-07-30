@@ -161,7 +161,7 @@
             "granularity": {
               "enum": ["run"],
               "default": "run",
-              "description": "One pull request per run. Per-ticket is intentionally not accepted: it requires a branch-per-ticket policy the execute playbook does not implement, and a key that silently does nothing is worse than an absent feature."
+              "description": "One pull request per run. Per-ticket is intentionally not accepted: it requires a branch-per-ticket policy the pipeline playbook does not implement, and a key that silently does nothing is worse than an absent feature."
             },
             "draft": {
               "type": "boolean",
@@ -233,7 +233,7 @@
       "properties": {
         "artifacts": {
           "type": "string",
-          "description": "Where the plan playbook persists its artefacts: a path, or a named memory backend."
+          "description": "Where the start-task playbook persists its artefacts: a path, or a named memory backend."
         }
       }
     }

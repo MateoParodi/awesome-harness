@@ -1,7 +1,7 @@
 # verify
 
 Review the current changes independently, fix what is real, run the project's own checks,
-then review again with fresh eyes. Returns a single verdict the execute playbook reads.
+then review again with fresh eyes. Returns a single verdict the pipeline playbook reads.
 
 **You orchestrate; you do not review your own work.** Review goes to fresh, read-only
 reviewers and fixing goes to a separate agent. Reviewer independence is the entire value:
@@ -129,4 +129,4 @@ deferred); files changed with a line each; quality proposals not applied; every 
 check with its labelled result; remaining risks.
 
 End with a single verdict — **pass**, **pass with warnings**, or **blocked** — because that
-line is the gate the execute playbook reads.
+line is the gate the pipeline playbook reads.

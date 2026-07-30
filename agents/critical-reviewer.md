@@ -13,7 +13,7 @@ data.
 | `tools` | Read-only inspection only. Never an editing tool. |
 | `model` | The project's strongest reasoning model. This is where the extra cost is justified. |
 
-## When the verify playbook chooses this reviewer
+## When the review-and-fix playbook chooses this reviewer
 
 Any hit escalates: authentication or authorisation · money, balances, or anything
 transactional · personal or otherwise sensitive data · schema and data migrations ·

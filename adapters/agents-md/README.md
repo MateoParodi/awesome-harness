@@ -33,14 +33,14 @@ it:
 ## Harness
 
 This project uses Awesome Harness. Playbooks live in `~/.harness/core/`:
-capture · plan · execute · verify · ship
+create-task · start-task · pipeline · review-and-fix · ship
 
 Read before acting: `~/.harness/profile/me.md`, then `.harness/config.yml`,
 then `~/.harness/trackers/<kind>.md`.
 
 Check `harness.version` against the core before starting a run.
 
-Capability note: this agent has no sub-agent primitive. The execute playbook runs
+Capability note: this agent has no sub-agent primitive. The pipeline playbook runs
 implementation in the main thread — keep runs short and report that context was not
 isolated.
 <!-- awesome-harness:end -->
@@ -50,10 +50,10 @@ isolated.
 
 Stated plainly, because a playbook that assumes wrongly is worse than one that adapts:
 
-- **no sub-agents** — the execute playbook loses its context hygiene. Implementation happens
+- **no sub-agents** — the pipeline playbook loses its context hygiene. Implementation happens
   in the same thread that orchestrates, so quality degrades over a long run. Prefer
   `next` over `run`, or `run --limit 2`.
-- **no parallel review** — the verify playbook reviews serially, and an inline review is
+- **no parallel review** — the review-and-fix playbook reviews serially, and an inline review is
   weaker evidence than an independent one. It must say so in its report.
 - **no independent reviewer context** — the same thread that wrote the code reviews it. The
   deterministic checks in `verify[]` therefore carry proportionally more weight here: they

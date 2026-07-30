@@ -103,7 +103,7 @@ about.
 
 ### 3. The gate
 
-Invoke the verify playbook against the working tree. It already runs the project's declared
+Invoke the review-and-fix playbook against the working tree. It already runs the project's declared
 checks internally and loops its own review — **do not duplicate any of it.** Read its final
 status.
 
