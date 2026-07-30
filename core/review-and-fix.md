@@ -1,7 +1,11 @@
-# verify
+# review-and-fix
 
-Review the current changes independently, fix what is real, run the project's own checks,
-then review again with fresh eyes. Returns a single verdict the pipeline playbook reads.
+Run the project's own checks, review the current changes independently, fix what is real,
+re-validate, then review again with fresh eyes. Returns a single verdict the pipeline
+playbook reads.
+
+**The checks come first.** Cheap deterministic signal gates expensive agent work — a
+reviewer never reads code the machine has already rejected.
 
 **You orchestrate; you do not review your own work.** Review goes to fresh, read-only
 reviewers and fixing goes to a separate agent. Reviewer independence is the entire value:
@@ -45,7 +49,28 @@ Print the scope before delegating: file count, comparison point, mode.
 
 ---
 
-## Phase 2 — Independent review
+## Phase 2 — Entry gate: the declared checks, first
+
+**Never spend a review on code that cannot pass the machine.** Run `verify[]` before
+launching any reviewer. A diff that does not compile was never going to pass the gate, and
+a full agent review of it is time and tokens burned on a foregone conclusion.
+
+- **Green** → review.
+- **Red, caused by this change** → do not review. Hand the concrete failure to the fixer —
+  errors verbatim, or failing test names with their output — and re-run. **Two attempts.**
+  Still red → **blocked**. The reviewer is never launched.
+- **Red, pre-existing** → the tree was already failing. Do not loop the fixer on someone
+  else's breakage: label it, say what is red, and review anyway.
+
+Telling those apart is the judgement in this phase. Check whether the failure names things
+the diff actually touches; when unsure, set the change aside, re-run, restore. **Erring
+towards "pre-existing" lets a real regression through, so genuine ambiguity counts as
+caused by the change.**
+
+A check that could not run is not green. Say so and stop — an unverifiable gate must never
+be reported as passed.
+
+## Phase 3 — Independent review
 
 Launch a reviewer with a fresh context. Give it the changed files, the diff, the project's
 authoritative guidance, and the surrounding files it needs to judge the change. It must not
@@ -62,7 +87,7 @@ each bucket — same file, same line, same root cause is one finding.
 
 ---
 
-## Phase 3 — Triage
+## Phase 4 — Triage
 
 Decide before editing anything.
 
@@ -85,7 +110,7 @@ decision — then stop and ask.
 
 ---
 
-## Phase 4 — Fix
+## Phase 5 — Fix
 
 Hand accepted findings to the fixer. Independent findings in different files may batch;
 **never run two fixers on the same file in parallel.**
@@ -94,7 +119,13 @@ Afterwards read the full diff yourself, to catch out-of-scope changes before val
 
 ---
 
-## Phase 5 — Deterministic validation
+## Phase 6 — Re-validate after fixes
+
+**Skip this phase if phase 5 edited nothing.** The entry gate already ran these exact checks
+against these exact bytes. Record it as skipped.
+
+Whenever anything was edited, run them: the fixer's output is unvalidated code, and this is
+the only thing that says otherwise.
 
 **The final authority.** Run the checks declared in `verify[]`, in order, narrowest scope
 first. Discover nothing, assume nothing: if it is not declared, it does not run.
@@ -110,11 +141,11 @@ check: passed, failed, could-not-run, pre-existing failure, or skipped with a re
 
 ---
 
-## Phase 6 — Fresh re-review
+## Phase 7 — Fresh re-review
 
 ### Skip it when nothing changed
 
-**If phase 2 returned no correctness findings and phase 4 edited nothing, skip this phase.**
+**If phase 3 returned no correctness findings and phase 5 edited nothing, skip this phase.**
 The diff is byte-for-byte what the first reviewer already read, so a "fresh" review buys a
 second opinion on unchanged code — which is not what this phase is for. Go to the report
 and record the re-review as skipped.
@@ -141,9 +172,11 @@ is for.
 
 ---
 
-## Phase 7 — Report
+## Phase 8 — Report
 
-State the mode and scope; **whether the re-review ran or was skipped, and why**; correctness
+State the mode and scope; the **entry gate** result (green, red-then-fixed, or
+pre-existing); **whether the re-validate and the re-review ran or were skipped, and why**;
+correctness
 and quality counts (found, fixed, rejected, deferred); files changed with a line each;
 quality proposals not applied; every validation check with its labelled result; remaining
 risks.
