@@ -164,6 +164,11 @@ function writeConfig(answers) {
     return;
   }
 
+  const assignee = answers.assigneeEnv ? `  assignee: \${${answers.assigneeEnv}}\n` : "";
+  const iteration = answers.iterFrom
+    ? `  iteration:\n    from: "${answers.iterFrom}"\n    current: "${answers.iterCurrent}"\n`
+    : "";
+
   const yml = `# Awesome Harness — project config
 # THE ONLY FILE HERE THAT IS COMMITTED. Project truth: the gate, the state map, the rules.
 # Safe to commit because identifiers are \${ENV_VAR} references, never literals.
@@ -177,7 +182,7 @@ stack: ${answers.stack}
 tracker:
   kind: ${answers.tracker}
   board: \${${answers.boardEnv}}
-  shared: true
+${assignee}${iteration}  shared: true
   marker_field: ${answers.markerField}
   cache_ttl: 5m
   states:
@@ -424,6 +429,19 @@ try {
     blocked: await ask("  blocked   →", "Blocked"),
   };
 
+  // Board shape — decided here, once, with the operator. Playbooks read it from config;
+  // capture-time analysis of a board is slow, quota-metered and non-deterministic.
+  console.log(`\n${c.dim("Board shape. An empty iteration answer means kanban: playbooks will never ask about sprints.")}`);
+  answers.iterFrom = await ask("iteration property? (sprint · cycle · milestone — empty = none)", "");
+  answers.iterCurrent = "";
+  if (answers.iterFrom) {
+    const dflt = answers.tracker === "github-issues"
+      ? "open milestone with the nearest due date"
+      : "Sprint status is Current";
+    answers.iterCurrent = await ask("  how is the current one identified?", dflt);
+  }
+  answers.assigneeEnv = await ask("env var holding your tracker user id? (empty = no auto-assign)", "");
+
   // The one step that is never inferred.
   const proposed = presetVerify(answers.stack);
   console.log(`\n${c.bold("Verification chain")} — the gate. This is never guessed.`);
@@ -509,12 +527,16 @@ try {
   }
 
   console.log(`\n${c.bold("Next")}`);
-  console.log(`  1. export ${answers.boardEnv}=<your board id>`);
-  console.log(`  2. cp ~/.harness/profile/TEMPLATE.md ~/.harness/profile/me.md  ${c.dim("and fill it in")}`);
-  if (answers.verify.includes("TODO")) {
-    console.log(`  3. ${c.yellow("declare the verification chain in .harness/config.yml — it is a TODO right now")}`);
+  let step = 1;
+  console.log(`  ${step++}. export ${answers.boardEnv}=<your board id>`);
+  if (answers.assigneeEnv) {
+    console.log(`  ${step++}. export ${answers.assigneeEnv}=<your tracker user id>`);
   }
-  console.log(`  4. commit .harness/config.yml\n`);
+  console.log(`  ${step++}. cp ~/.harness/profile/TEMPLATE.md ~/.harness/profile/me.md  ${c.dim("and fill it in")}`);
+  if (answers.verify.includes("TODO")) {
+    console.log(`  ${step++}. ${c.yellow("declare the verification chain in .harness/config.yml — it is a TODO right now")}`);
+  }
+  console.log(`  ${step++}. commit .harness/config.yml\n`);
 } finally {
   rl?.close();
 }

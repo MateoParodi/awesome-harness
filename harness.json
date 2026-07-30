@@ -1,6 +1,6 @@
 {
   "name": "awesome-harness",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "One playbook for turning a thought into a shipped commit. Any repo, any stack, any agent.",
   "playbooks": ["create-task", "start-task", "pipeline", "review-and-fix", "ship"],
   "agents": ["reviewer", "critical-reviewer", "fixer"],

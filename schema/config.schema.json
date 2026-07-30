@@ -69,7 +69,8 @@
         },
         "iteration": {
           "type": "object",
-          "description": "Where 'the current iteration' comes from. A cycle, a sprint, a milestone, a version in development — the playbooks only ask for the current one.",
+          "description": "Where 'the current iteration' comes from. A cycle, a sprint, a milestone, a version in development — the playbooks only ask for the current one. ABSENT MEANS THE BOARD HAS NONE: a kanban or release-train project omits this key and the playbooks never ask about iterations at all.",
+          "required": ["from", "current"],
           "additionalProperties": false,
           "properties": {
             "from":    { "type": "string", "description": "Field, relation or built-in concept holding the iteration." },
@@ -78,7 +79,8 @@
         },
         "assignee": {
           "type": "string",
-          "description": "Who new tickets are assigned to, when the tracker models people at all. Omit when it does not."
+          "description": "Who new tickets are assigned to, when the tracker models people at all. MUST be an ${ENV_VAR} reference — identity is per-operator and this file is committed and shared. Omit when the tracker does not model people or tickets should stay unassigned.",
+          "pattern": "^\\$\\{[A-Z0-9_]+\\}$"
         },
         "shared": {
           "type": "boolean",

@@ -27,7 +27,12 @@ Moving state means removing the old label and adding the new one — never leave
 labels on one issue. Create the labels at init if they are missing.
 
 `tracker.severity_order` maps to labels too. `tracker.iteration` maps to a **milestone**;
-"current" is the open milestone with the nearest due date.
+"current" is the open milestone with the nearest due date. When config has no
+`tracker.iteration` key the project runs a plain kanban — set no milestone and never ask.
+
+`tracker.assignee` is a `${ENV_VAR}` reference resolving to a **GitHub username**. Pass it
+at creation (`--assignee`); the user must have access to the repository or the write is
+rejected.
 
 `tracker.marker_field` has no natural home: issues have no free-text property beside the
 body. Use a **marker line at the top of the issue body**, delimited so it can be replaced

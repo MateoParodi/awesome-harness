@@ -60,6 +60,9 @@ const NODE_ANSWERS = [
   "",            // board env var
   "",            // marker field
   "", "", "", "", "",  // five state mappings
+  "Sprint",      // iteration property (sprint board)
+  "",            // current-iteration predicate (default)
+  "HARNESS_ASSIGNEE", // assignee env var
   "y",           // use proposed verify chain
   "",            // push policy (never)
   "",            // commit language
@@ -99,6 +102,11 @@ console.log("\nfresh init (node fixture, both adapters)");
   check(exclude.includes(".harness/state.json"), "excludes the cursor");
   check(exclude.includes(".harness/generated.json"), "excludes the manifest");
   check(!out.includes("does not validate"), "produced config raises no schema warning");
+
+  const cfg = readFileSync(join(dir, ".harness/config.yml"), "utf8");
+  check(cfg.includes("assignee: ${HARNESS_ASSIGNEE}"), "config carries the assignee env reference");
+  check(cfg.includes('from: "Sprint"'), "config carries the iteration property");
+  check(cfg.includes('current: "Sprint status is Current"'), "config carries the current-iteration predicate");
 
   try {
     sh(dir, process.execPath, [VALIDATE, ".harness/config.yml"]);
@@ -143,6 +151,7 @@ console.log("\ntracked AGENTS.md (unknown stack, agents-md adapter)");
   const answers = [
     "plain", "fixture2", "", "", "",
     "", "", "", "", "",
+    "", "",  // iteration (empty = kanban, skips the predicate question) · assignee (none)
     // no preset for "plain" → no chain confirmation question
     "", "", "", "", "",
     "agents-md",
@@ -151,6 +160,9 @@ console.log("\ntracked AGENTS.md (unknown stack, agents-md adapter)");
 
   check(readFileSync(join(dir, "AGENTS.md"), "utf8") === "# Team conventions\nDo not touch.\n",
     "tracked AGENTS.md left byte-for-byte untouched");
+  const cfg2 = readFileSync(join(dir, ".harness/config.yml"), "utf8");
+  check(!cfg2.includes("iteration:") && !cfg2.includes("assignee:"),
+    "kanban board writes no iteration or assignee keys");
   check(out.includes("TRACKED"), "installer says why it did not write");
   check(out.includes("TODO"), "unknown stack leaves the gate as an explicit TODO");
 

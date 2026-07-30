@@ -67,8 +67,11 @@ Ask only what cannot be deduced. Group independent questions into one round.
   operator picks another, record it and move on.** Do not relitigate.
 - **Severity** — propose one with justification; the operator corrects. It determines queue
   order.
-- **Iteration** — default to the project's current iteration. Confirm, don't assume
-  silently.
+- **Iteration** — read `tracker.iteration` from config. Absent means the board has no
+  iteration concept (a kanban, a release train): skip the question entirely, do not
+  mention sprints at all. Present: resolve the current one through the tracker document,
+  propose it, and let the operator confirm. The board's shape was decided at init —
+  capture never re-analyzes it.
 - **Change** — deduce it; confirm only on genuine ambiguity.
 
 If reconnaissance surfaces information that would change an answer already given, say so in
@@ -131,8 +134,9 @@ direct | spec-driven — the reason, in one line.
 ticket badly filed, including when enriching an old one.
 
 Fields: state `queued` (or `captured` if it should stay out of the queue), type, change,
-severity, iteration, and a one-line note carrying the most useful lead and the trap to
-avoid.
+severity, iteration (only when the board has one), and a one-line note carrying the most
+useful lead and the trap to avoid. When `tracker.assignee` is set, assign the ticket to
+that identity; when it is not, leave the ticket unassigned rather than guessing an owner.
 
 **Never add properties to the tracker's schema.** If something seems to need a new column,
 propose it and wait.

@@ -28,6 +28,31 @@ Notion databases name their own properties, so nothing here is assumed:
 - `tracker.marker_field` must name a **text** property; the marker is written at its start,
   preserving whatever was already there
 
+## Iteration
+
+`tracker.iteration.from` names the property carrying the sprint or cycle. Two shapes cover
+almost every board:
+
+- **A relation to a sprint database** (Notion's built-in sprints work this way): query the
+  sprint data source and pick the entry matching `iteration.current` — with built-in
+  sprints that is the page whose "Sprint status" select is `Current`.
+- **A date-ranged property**: current is the entry whose range contains today.
+
+Resolve at write time and never cache the answer across days — a sprint boundary silently
+invalidates yesterday's result. If nothing matches the predicate, say so and leave the
+property empty rather than picking the nearest candidate.
+
+When config has no `tracker.iteration` key, the board is a kanban: write no iteration
+property and never ask about sprints.
+
+## Assignee
+
+`tracker.assignee` is a `${ENV_VAR}` reference resolving to a **Notion person identifier**,
+for the same reason as the board: identity is per-operator, and this file is committed. Set
+the people property named by the schema — it may not be called "Assignee". Read the
+property back after writing rather than trusting the response: a person outside the
+connection's reach can fail to stick.
+
 ## Querying the queue
 
 Query the data source filtering on the mapped `queued` value. Notion cannot order by the
